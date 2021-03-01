@@ -41,7 +41,7 @@ def make_gradcam_heatmap(
     last_conv_layer = model.get_layer(last_conv_layer_name)
     last_conv_layer_model = keras.Model(model.inputs, last_conv_layer.output)
 
-    last_conv_layer_model.summary()
+    #last_conv_layer_model.summary()
 
     # Second, we create a model that maps the activations of the last conv
     # layer to the final class predictions
@@ -112,8 +112,9 @@ def get_jet_img(img, heatmap):
     # superimposed_img.save(save_path)
     # img_ = cv2.resize(img, (360, 360),interpolation=cv2.INTER_CUBIC)
     # print("img ","--"*60,img.shape)
-    # heatmap_ = cv2.resize(heatmap, (360, 360),interpolation = cv2.INTER_CUBIC)
-    # print("heatmap ","--"*60,heatmap.shape)
-    # superimposed_img_ = cv2.resize(np.array(superimposed_img), (360, 360),interpolation = cv2.INTER_CUBIC)
-    # print("superimposed img ","--"*60,np.array(superimposed_img).shape)
-    return img, heatmap, superimposed_img
+    heatmap_ = cv2.resize(heatmap, (360, 360),interpolation = cv2.INTER_CUBIC)
+    print("heatmap ","--"*60,heatmap.shape)
+    print("heatmap_ ","--"*60,heatmap_.shape)
+    superimposed_img_ = cv2.resize(np.array(superimposed_img), (360, 360),interpolation = cv2.INTER_CUBIC)
+    print("superimposed img ","--"*60,np.array(superimposed_img).shape)
+    return img, heatmap, heatmap_, superimposed_img

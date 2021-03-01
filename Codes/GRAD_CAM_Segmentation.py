@@ -70,6 +70,7 @@ for img_file in all_files_samples:
     all_img = []
     all_heatmap = []
     all_superimposed_img = []
+    all_heatmap_ = []
 
     img_save_name, num = str(str(img_file.split('/')[1]).split('.')[0]).split('_')
     print("img_save_name = ", img_save_name, " num = ",num)
@@ -111,11 +112,13 @@ for img_file in all_files_samples:
     )
 
     img = get_img
-    img, heatmap, superimposed_img = get_jet_img(img, heatmap)
+    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
     print("--"*60,img.shape)
     all_img.append(img)
     all_heatmap.append(heatmap)
+    all_heatmap_.append(heatmap_)
     all_superimposed_img.append(superimposed_img)
+    
 
     # Save the superimposed image
     #save_path = "save/{}_{}.jpg".format(img_save_name, num)
@@ -143,10 +146,13 @@ for img_file in all_files_samples:
     )
 
     img = get_img
-    img, heatmap, superimposed_img = get_jet_img(img, heatmap)
+    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    print("--"*60,img.shape)
     all_img.append(img)
     all_heatmap.append(heatmap)
+    all_heatmap_.append(heatmap_)
     all_superimposed_img.append(superimposed_img)
+    
 
     last_conv_layer_name = "conv_64" 
     classifier_layer_names = [
@@ -169,10 +175,13 @@ for img_file in all_files_samples:
     )
 
     img = get_img
-    img, heatmap, superimposed_img = get_jet_img(img, heatmap)
+    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    print("--"*60,img.shape)
     all_img.append(img)
     all_heatmap.append(heatmap)
+    all_heatmap_.append(heatmap_)
     all_superimposed_img.append(superimposed_img)
+    
     
 
     last_conv_layer_name = "conv_32"
@@ -198,24 +207,30 @@ for img_file in all_files_samples:
     )
 
     img = get_img
-    img, heatmap, superimposed_img = get_jet_img(img, heatmap)
-    
+    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    print("--"*60,img.shape)
     all_img.append(img)
     all_heatmap.append(heatmap)
+    all_heatmap_.append(heatmap_)
     all_superimposed_img.append(superimposed_img)
+    
 
     fig = plt.figure()
     count = 0
-    for img, heatmap, superimposed_img in zip(all_img, all_heatmap, all_superimposed_img):
+    for img, heatmap, heatmap_, superimposed_img in zip(all_img, all_heatmap, all_heatmap_, all_superimposed_img):
         count += 1
-        ax1 = fig.add_subplot(4,3,count)
+        ax1 = fig.add_subplot(4,4,count)
         ax1.imshow(img)
         count += 1
-        ax2 = fig.add_subplot(4,3,count)
+        ax2 = fig.add_subplot(4,4,count)
         ax2.imshow(heatmap)
         count += 1
-        ax3 = fig.add_subplot(4,3,count)
-        ax3.imshow(superimposed_img)
+        ax3 = fig.add_subplot(4,4,count)
+        ax3.imshow(heatmap_)
+        count += 1
+        ax4 = fig.add_subplot(4,4,count)
+        ax4.imshow(superimposed_img)
+        
     print("count = ",count)
     plt.show()
 
