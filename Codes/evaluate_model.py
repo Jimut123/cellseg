@@ -7,6 +7,19 @@ import time
 import cv2
 import os
 
+
+import tensorflow as tf
+from tensorflow import keras
+import keras
+import keras.utils
+from keras import utils as np_utils
+from tensorflow.keras import datasets, layers, models
+from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D, GlobalMaxPool2D, Dropout
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.models import Model
+
+
+
 dir = glob.glob('PBC_dataset_normal_DIB/*')
 get_freq = {}
 # count = 1
@@ -92,11 +105,7 @@ train_idx, valid_idx = train_idx[:train_up_to], train_idx[train_up_to:]
 print('train count: %s, valid count: %s, test count: %s' % (
     len(train_idx), len(valid_idx), len(test_idx)))
 
-import tensorflow as tf
-from tensorflow.keras import datasets, layers, models
-from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D, GlobalMaxPool2D, Dropout
-from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.models import Model
+
 
 input_layer = tf.keras.Input(shape=(H, W, C))
 x = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(2, 2), name="conv_32")(input_layer)
