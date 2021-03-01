@@ -84,3 +84,36 @@ def make_gradcam_heatmap(
     # For visualization purpose, we will also normalize the heatmap between 0 & 1
     heatmap = np.maximum(heatmap, 0) / np.max(heatmap)
     return heatmap
+
+def get_jet_img(img, heatmap):
+    
+
+    # We rescale heatmap to a range 0-255
+    heatmap = np.uint8(255 * heatmap)
+
+    # We use jet colormap to colorize heatmap
+    jet = cm.get_cmap("jet")
+
+    # We use RGB values of the colormap
+    jet_colors = jet(np.arange(256))[:, :3]
+    jet_heatmap = jet_colors[heatmap]
+
+    # We create an image with RGB colorized heatmap
+    jet_heatmap = keras.preprocessing.image.array_to_img(jet_heatmap)
+    jet_heatmap = jet_heatmap.resize((img.shape[1], img.shape[0]))
+    jet_heatmap = keras.preprocessing.image.img_to_array(jet_heatmap)
+
+    # Superimpose the heatmap on original image
+    superimposed_img = jet_heatmap * 0.4 + img
+    superimposed_img = keras.preprocessing.image.array_to_img(superimposed_img)
+
+    # Save the superimposed image
+    # save_path = "cell.jpg"
+    # superimposed_img.save(save_path)
+    # img_ = cv2.resize(img, (360, 360),interpolation=cv2.INTER_CUBIC)
+    # print("img ","--"*60,img.shape)
+    # heatmap_ = cv2.resize(heatmap, (360, 360),interpolation = cv2.INTER_CUBIC)
+    # print("heatmap ","--"*60,heatmap.shape)
+    # superimposed_img_ = cv2.resize(np.array(superimposed_img), (360, 360),interpolation = cv2.INTER_CUBIC)
+    # print("superimposed img ","--"*60,np.array(superimposed_img).shape)
+    return img, heatmap, superimposed_img

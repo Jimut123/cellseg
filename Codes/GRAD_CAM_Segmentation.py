@@ -19,7 +19,7 @@ import matplotlib.cm as cm
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 import numpy as np
-from GRAD_CAM import get_img_array, make_gradcam_heatmap
+from GRAD_CAM import get_img_array, make_gradcam_heatmap, get_jet_img
 import cv2
 import glob
 
@@ -63,7 +63,13 @@ print("MODEL LOADED!")
 all_files_samples = glob.glob('samples/*.jpg')
 img_size = (300,300)
 
+
+
 for img_file in all_files_samples:
+
+    all_img = []
+    all_heatmap = []
+    all_superimposed_img = []
 
     img_save_name, num = str(str(img_file.split('/')[1]).split('.')[0]).split('_')
     print("img_save_name = ", img_save_name, " num = ",num)
@@ -104,47 +110,112 @@ for img_file in all_files_samples:
         img_array, model, last_conv_layer_name, classifier_layer_names
     )
 
-    # Display heatmap
-    # plt.matshow(heatmap)
-    # plt.show()
-
-    # We load the original image
-    # img = keras.preprocessing.image.load_img(img_path)
-    # img = keras.preprocessing.image.img_to_array(img)
-
     img = get_img
-
-    # We rescale heatmap to a range 0-255
-    heatmap = np.uint8(255 * heatmap)
-
-    # We use jet colormap to colorize heatmap
-    jet = cm.get_cmap("jet")
-
-    # We use RGB values of the colormap
-    jet_colors = jet(np.arange(256))[:, :3]
-    jet_heatmap = jet_colors[heatmap]
-
-    # We create an image with RGB colorized heatmap
-    jet_heatmap = keras.preprocessing.image.array_to_img(jet_heatmap)
-    jet_heatmap = jet_heatmap.resize((img.shape[1], img.shape[0]))
-    jet_heatmap = keras.preprocessing.image.img_to_array(jet_heatmap)
-
-    # Superimpose the heatmap on original image
-    superimposed_img = jet_heatmap * 0.4 + img
-    superimposed_img = keras.preprocessing.image.array_to_img(superimposed_img)
+    img, heatmap, superimposed_img = get_jet_img(img, heatmap)
+    print("--"*60,img.shape)
+    all_img.append(img)
+    all_heatmap.append(heatmap)
+    all_superimposed_img.append(superimposed_img)
 
     # Save the superimposed image
-    save_path = "save/{}_{}.jpg".format(img_save_name, num)
-    superimposed_img.save(save_path)
+    #save_path = "save/{}_{}.jpg".format(img_save_name, num)
+    #superimposed_img.save(save_path)
 
     # Display Grad CAM
-    #display(Image(save_path))
-    fig = plt.figure(figsize=(10,30))
-    ax1 = fig.add_subplot(1,3,1)
-    ax1.imshow(get_img)
-    ax2 = fig.add_subplot(1,3,2)
-    ax2.imshow(heatmap)
-    ax3 = fig.add_subplot(1,3,3)
-    ax3.imshow(superimposed_img)
+
+
+    last_conv_layer_name = "conv_64_2" #"dense_2" 
+    classifier_layer_names = [
+        "max_pool3",
+        "flatten",
+        "dense_512",
+        "dropout_1",
+        "dense_256",
+        "dropout_2",
+        "dense_64",
+        "dropout_3",
+        "output_layer",
+    ]
+
+    # Generate class activation heatmap
+    heatmap = make_gradcam_heatmap(
+        img_array, model, last_conv_layer_name, classifier_layer_names
+    )
+
+    img = get_img
+    img, heatmap, superimposed_img = get_jet_img(img, heatmap)
+    all_img.append(img)
+    all_heatmap.append(heatmap)
+    all_superimposed_img.append(superimposed_img)
+
+    last_conv_layer_name = "conv_64" 
+    classifier_layer_names = [
+        "max_pool2",
+        "conv_64_2",
+        "max_pool3",
+        "flatten",
+        "dense_512",
+        "dropout_1",
+        "dense_256",
+        "dropout_2",
+        "dense_64",
+        "dropout_3",
+        "output_layer",
+    ]
+
+    # Generate class activation heatmap
+    heatmap = make_gradcam_heatmap(
+        img_array, model, last_conv_layer_name, classifier_layer_names
+    )
+
+    img = get_img
+    img, heatmap, superimposed_img = get_jet_img(img, heatmap)
+    all_img.append(img)
+    all_heatmap.append(heatmap)
+    all_superimposed_img.append(superimposed_img)
+    
+
+    last_conv_layer_name = "conv_32"
+    classifier_layer_names = [
+        "max_pool1",
+        "conv_64",
+        "max_pool2",
+        "conv_64_2",
+        "max_pool3",
+        "flatten",
+        "dense_512",
+        "dropout_1",
+        "dense_256",
+        "dropout_2",
+        "dense_64",
+        "dropout_3",
+        "output_layer",
+    ]
+
+    # Generate class activation heatmap
+    heatmap = make_gradcam_heatmap(
+        img_array, model, last_conv_layer_name, classifier_layer_names
+    )
+
+    img = get_img
+    img, heatmap, superimposed_img = get_jet_img(img, heatmap)
+    
+    all_img.append(img)
+    all_heatmap.append(heatmap)
+    all_superimposed_img.append(superimposed_img)
+
+    fig = plt.figure()
+    count = 0
+    for img, heatmap, superimposed_img in zip(all_img, all_heatmap, all_superimposed_img):
+        count += 1
+        ax1 = fig.add_subplot(4,3,count)
+        ax1.imshow(img)
+        count += 1
+        ax2 = fig.add_subplot(4,3,count)
+        ax2.imshow(heatmap)
+        count += 1
+        ax3 = fig.add_subplot(4,3,count)
+        ax3.imshow(superimposed_img)
+    print("count = ",count)
     plt.show()
 
