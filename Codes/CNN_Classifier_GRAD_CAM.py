@@ -1,5 +1,16 @@
 import matplotlib.pyplot as plt
 from datetime import datetime
+import tensorflow as tf
+from tensorflow.keras import datasets, layers, models
+from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D, GlobalMaxPool2D, Dropout
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.utils import to_categorical
+from PIL import Image
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow import keras
+import pandas as pd
+from tensorflow.keras.models import Model
+from keras.optimizers import Adam
 import pandas as pd
 import numpy as np
 import glob
@@ -91,11 +102,6 @@ print('train count: %s, valid count: %s, test count: %s' % (
     len(train_idx), len(valid_idx), len(test_idx)))
 
 
-import tensorflow as tf
-from tensorflow.keras import datasets, layers, models
-from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D, GlobalMaxPool2D, Dropout
-from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.models import Model
 
 input_layer = tf.keras.Input(shape=(H, W, C))
 x = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(2, 2), name="conv_32")(input_layer)
@@ -118,13 +124,11 @@ x = tf.keras.layers.Dense(N_LABELS, activation='softmax', name="output_layer")(x
 
 model = tf.keras.models.Model(inputs=input_layer, outputs=x)
 
-model.compile(optimizer='adam', 
+model.compile(optimizer=Adam(learning_rate=1e-5), 
               loss='categorical_crossentropy',
               metrics= ['accuracy'])
 model.summary()
 
-from tensorflow.keras.utils import to_categorical
-from PIL import Image
 
 def get_data_generator(df, indices, for_training, batch_size=16):
     images, labels = [], []
@@ -151,8 +155,6 @@ def get_data_generator(df, indices, for_training, batch_size=16):
         if not for_training:
             break
 
-from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow import keras
 # batch_size = 100
 # valid_batch_size = 32
 batch_size = 40
@@ -169,19 +171,18 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 history = model.fit(train_gen,
                     steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=150,
+                    epochs=200,
                     callbacks=[tensorboard_callback,callbacks],
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
 
-import pandas as pd
 hist_df = pd.DataFrame(history.history) 
-hist_json_file = 'history_150e.json' 
+hist_json_file = 'history_200e.json' 
 with open(hist_json_file, mode='w') as f:
     hist_df.to_json(f)
 
 # download the model in computer for later use
-model.save('classification_blood_150epochs.h5')
+model.save('classification_blood_200epochs.h5')
 
 
 
