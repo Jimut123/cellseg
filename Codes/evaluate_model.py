@@ -106,6 +106,11 @@ print('train count: %s, valid count: %s, test count: %s' % (
     len(train_idx), len(valid_idx), len(test_idx)))
 
 
+import tensorflow as tf
+from tensorflow.keras import datasets, layers, models
+from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D, GlobalMaxPool2D, Dropout
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.models import Model
 
 input_layer = tf.keras.Input(shape=(H, W, C))
 x = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(2, 2), name="conv_32")(input_layer)
@@ -127,6 +132,11 @@ x = tf.keras.layers.Dense(N_LABELS, activation='softmax', name="output_layer")(x
 #x = tf.keras.layers.Reshape((1, N_LABELS))(x)
 
 model = tf.keras.models.Model(inputs=input_layer, outputs=x)
+
+model.compile(optimizer='adam', 
+              loss='categorical_crossentropy',
+              metrics= ['accuracy'])
+model.summary()
 
 model.compile(optimizer='adam', 
               loss='categorical_crossentropy',
@@ -163,7 +173,7 @@ def get_data_generator(df, indices, for_training, batch_size=16):
 
 
 from tensorflow import keras
-model = keras.models.load_model('classification_blood.h5')
+model = keras.models.load_model('classification_blood_200epochs.h5')
 
 test_gen = get_data_generator(df, test_idx, for_training=False, batch_size=128)
 res = dict(zip(model.metrics_names, model.evaluate(test_gen, steps=len(test_idx)//128)))
