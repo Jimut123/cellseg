@@ -55,9 +55,11 @@ model.summary()
 model = keras.models.load_model('classification_blood.h5')
 
 print("MODEL LOADED!")
+
 ###########################################
 
-
+index = {'platelet': 0, 'eosinophil': 1, 'lymphocyte': 2, 'monocyte': 3, 'basophil': 4, 'ig': 5, 'erythroblast': 6, 'neutrophil': 7}
+rev_index = {0: 'platelet', 1: 'eosinophil', 2: 'lymphocyte', 3: 'monocyte', 4: 'basophil', 5: 'ig', 6: 'erythroblast', 7: 'neutrophil'}
 
 
 all_files_samples = glob.glob('samples/*.jpg')
@@ -93,6 +95,10 @@ for img_file in all_files_samples:
     preds = model.predict(img_array)
     # print("Predicted:", decode_predictions(preds, top=1)[0])
     print("preds : ", preds)
+    indx = int(np.argmax(preds))
+    print(" Max = ", indx)
+    predicted_name = rev_index[indx]
+    print(" Predicted name = ", predicted_name)
 
     last_conv_layer_name = "max_pool3" #"dense_2" 
     classifier_layer_names = [
@@ -254,6 +260,11 @@ for img_file in all_files_samples:
     print("Coord = ",x,y)
     cv2.rectangle(img,(x-70,y-70),(x+100,y+100),(0,255,0),2)
     plt.imshow(img)
+    if predicted_name == img_save_name:
+        plt.title("Prediction = {}".format(predicted_name),fontsize=20).set_color('green')
+    else:
+        plt.title("Prediction = {}".format(predicted_name),fontsize=20).set_color('red')
+    plt.xlabel('true: {}'.format(img_save_name),fontsize=20)
     plt.show()
     # 36 grid NMS
     # votes = np.zeros((6,6))
