@@ -244,10 +244,28 @@ for img_file in all_files_samples:
     added_heatmap = np.zeros((360,360))
     for thres_ in all_thres:
         added_heatmap += thres_
-    
-    # 36 grid NMS
-
     plt.show()
     plt.imshow(added_heatmap) 
     plt.show()
+    maximum = np.amax(added_heatmap)
+    print("maximum = ",maximum)
+    coord = np.where(added_heatmap == maximum)
+    x, y = coord[0][0], coord[1][0]
+    print("Coord = ",x,y)
+    cv2.rectangle(img,(x-70,y-70),(x+100,y+100),(0,255,0),2)
+    plt.imshow(img)
+    plt.show()
+    # 36 grid NMS
+    # votes = np.zeros((6,6))
+    # for i in range(300):
+    #     for j in range(300):
+    #         grid_1 = added_heatmap[i:i+60,j:j+60]
+    #         plt.imshow(grid_1)
+    #         plt.show()
+    #         i+=60
+    #         j+=60
+    
+
+    
+    
 
