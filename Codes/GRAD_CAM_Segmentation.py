@@ -216,21 +216,38 @@ for img_file in all_files_samples:
     
 
     fig = plt.figure()
+    all_thres = []
     count = 0
     for img, heatmap, heatmap_, superimposed_img in zip(all_img, all_heatmap, all_heatmap_, all_superimposed_img):
         count += 1
-        ax1 = fig.add_subplot(4,4,count)
+        ax1 = fig.add_subplot(4,5,count)
         ax1.imshow(img)
         count += 1
-        ax2 = fig.add_subplot(4,4,count)
+        ax2 = fig.add_subplot(4,5,count)
         ax2.imshow(heatmap)
         count += 1
-        ax3 = fig.add_subplot(4,4,count)
+        ax3 = fig.add_subplot(4,5,count)
         ax3.imshow(heatmap_)
         count += 1
-        ax4 = fig.add_subplot(4,4,count)
+        # heatmap_gray = np.array(heatmap_)
+        # heatmap_gray = cv2.cvtColor(np.array(heatmap_), cv2.COLOR_BGR2GRAY)
+        # print("*"*50,np.array(heatmap_gray).shape)
+        ret, thres = cv2.threshold(heatmap_,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+        all_thres.append(thres)
+        ax3 = fig.add_subplot(4,5,count)
+        ax3.imshow(thres)
+        count += 1
+        ax4 = fig.add_subplot(4,5,count)
         ax4.imshow(superimposed_img)
-        
+    
     print("count = ",count)
+    added_heatmap = np.zeros((360,360))
+    for thres_ in all_thres:
+        added_heatmap += thres_
+    
+    # 36 grid NMS
+
+    plt.show()
+    plt.imshow(added_heatmap) 
     plt.show()
 
