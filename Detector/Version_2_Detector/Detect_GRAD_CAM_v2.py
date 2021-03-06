@@ -318,6 +318,9 @@ for img_file in all_files_samples:
     fig = plt.figure()
     all_thres = []
     count = 0
+
+    ## Show the layer wise heatmaps here
+
     for img, heatmap, heatmap_, superimposed_img in zip(all_img, all_heatmap, all_heatmap_, all_superimposed_img):
         count += 1
         ax1 = fig.add_subplot(7,5,count)
@@ -340,6 +343,7 @@ for img_file in all_files_samples:
         ax4 = fig.add_subplot(7,5,count)
         ax4.imshow(superimposed_img)
     
+    # show the added heatmap here after adding
     print("count = ",count)
     added_heatmap = np.zeros((360,360))
     for thres_ in all_thres:
@@ -349,7 +353,13 @@ for img_file in all_files_samples:
     plt.show()
     maximum = np.amax(added_heatmap)
     print("maximum = ",maximum)
+    
+    # ret, binary_thresh = cv2.threshold(added_heatmap,maximum - 6,maximum,cv2.THRESH_BINARY)
+    # plt.imshow(binary_thresh) 
+    # plt.show()
+
     coord = np.where(added_heatmap == maximum)
+
     x, y = coord[0][0], coord[1][0]
     print("Coord = ",x,y)
     cv2.rectangle(img,(x-70,y-70),(x+100,y+100),(0,255,0),2)
