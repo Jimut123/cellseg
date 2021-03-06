@@ -323,13 +323,13 @@ for img_file in all_files_samples:
 
     for img, heatmap, heatmap_, superimposed_img in zip(all_img, all_heatmap, all_heatmap_, all_superimposed_img):
         count += 1
-        ax1 = fig.add_subplot(7,5,count)
+        ax1 = fig.add_subplot(8,5,count)
         ax1.imshow(img)
         count += 1
-        ax2 = fig.add_subplot(7,5,count)
+        ax2 = fig.add_subplot(8,5,count)
         ax2.imshow(heatmap)
         count += 1
-        ax3 = fig.add_subplot(7,5,count)
+        ax3 = fig.add_subplot(8,5,count)
         ax3.imshow(heatmap_)
         count += 1
         # heatmap_gray = np.array(heatmap_)
@@ -337,10 +337,10 @@ for img_file in all_files_samples:
         # print("*"*50,np.array(heatmap_gray).shape)
         ret, thres = cv2.threshold(heatmap_,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
         all_thres.append(thres)
-        ax3 = fig.add_subplot(7,5,count)
+        ax3 = fig.add_subplot(8,5,count)
         ax3.imshow(thres)
         count += 1
-        ax4 = fig.add_subplot(7,5,count)
+        ax4 = fig.add_subplot(8,5,count)
         ax4.imshow(superimposed_img)
     
     # show the added heatmap here after adding
@@ -348,9 +348,11 @@ for img_file in all_files_samples:
     added_heatmap = np.zeros((360,360))
     for thres_ in all_thres:
         added_heatmap += thres_
-    plt.show()
-    plt.imshow(added_heatmap) 
-    plt.show()
+    # plt.show()
+    # plt.imshow(added_heatmap) 
+    # plt.show()
+    ax5 = fig.add_subplot(8,5,36)
+    ax5.imshow(added_heatmap)
     maximum = np.amax(added_heatmap)
     print("maximum = ",maximum)
     
@@ -363,11 +365,18 @@ for img_file in all_files_samples:
     x, y = coord[0][0], coord[1][0]
     print("Coord = ",x,y)
     cv2.rectangle(img,(x-70,y-70),(x+100,y+100),(0,255,0),2)
+    ax5 = fig.add_subplot(8,5,37)
+    ax5.imshow(img)
+    plt.show()
+    plt.imshow(added_heatmap) 
+    plt.show()
+    
     plt.imshow(img)
     if predicted_name == img_save_name:
         plt.title("Prediction = {}".format(predicted_name),fontsize=20).set_color('green')
     else:
         plt.title("Prediction = {}".format(predicted_name),fontsize=20).set_color('red')
+    
     plt.xlabel('true: {}'.format(img_save_name),fontsize=20)
     plt.show()
     # 36 grid NMS
