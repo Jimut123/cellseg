@@ -19,7 +19,7 @@ import matplotlib.cm as cm
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 import numpy as np
-from GRAD_CAM import get_img_array, make_gradcam_heatmap, get_jet_img
+from utils import get_img_array, make_gradcam_heatmap, get_jet_img
 import cv2
 import glob
 
