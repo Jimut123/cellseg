@@ -355,7 +355,6 @@ for img_file in all_files_samples:
     ax5.imshow(added_heatmap)
     maximum = np.amax(added_heatmap)
     print("maximum = ",maximum)
-    
     # ret, binary_thresh = cv2.threshold(added_heatmap,maximum - 6,maximum,cv2.THRESH_BINARY)
     # plt.imshow(binary_thresh) 
     # plt.show()
@@ -379,6 +378,12 @@ for img_file in all_files_samples:
     
     plt.xlabel('true: {}'.format(img_save_name),fontsize=20)
     plt.show()
+    """
+    import plotly.graph_objects as go
+    fig = go.Figure(data=[
+        go.Surface(z=added_heatmap)])
+    fig.show()
+    """
     # 36 grid NMS
     # votes = np.zeros((6,6))
     # for i in range(300):
