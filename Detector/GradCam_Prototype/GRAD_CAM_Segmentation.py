@@ -19,7 +19,11 @@ import matplotlib.cm as cm
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 import numpy as np
+
+import sys
+sys.path.insert(0, '../')
 from utils import get_img_array, make_gradcam_heatmap, get_jet_img
+
 import cv2
 import glob
 
@@ -62,7 +66,7 @@ index = {'platelet': 0, 'eosinophil': 1, 'lymphocyte': 2, 'monocyte': 3, 'basoph
 rev_index = {0: 'platelet', 1: 'eosinophil', 2: 'lymphocyte', 3: 'monocyte', 4: 'basophil', 5: 'ig', 6: 'erythroblast', 7: 'neutrophil'}
 
 
-all_files_samples = glob.glob('samples/*.jpg')
+all_files_samples = glob.glob('../samples/*.jpg')
 img_size = (300,300)
 
 
@@ -74,7 +78,7 @@ for img_file in all_files_samples:
     all_superimposed_img = []
     all_heatmap_ = []
 
-    img_save_name, num = str(str(img_file.split('/')[1]).split('.')[0]).split('_')
+    img_save_name, num = str(str(img_file.split('/')[2]).split('.')[0]).split('_')
     print("img_save_name = ", img_save_name, " num = ",num)
     # Prepare image
     # img_array = preprocess_input(get_img_array(img_path, size=img_size))
