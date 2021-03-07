@@ -168,13 +168,13 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow import keras
 # batch_size = 100
 # valid_batch_size = 32
-batch_size = 120
-valid_batch_size = 120
+batch_size = 40
+valid_batch_size = 40
 train_gen = get_data_generator(df, train_idx, for_training=True, batch_size=batch_size)
 valid_gen = get_data_generator(df, valid_idx, for_training=True, batch_size=valid_batch_size)
 
 callbacks = [
-    ModelCheckpoint("./model_checkpoint", monitor='val_loss'),
+    #ModelCheckpoint("./model_checkpoint", monitor='val_loss'),
     ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=4)
 ]
 # for storing logs into tensorboard
@@ -183,23 +183,23 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 history = model.fit(train_gen,
                     steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=150,
+                    epochs=200,
                     callbacks=[tensorboard_callback,callbacks],
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
 
 import pandas as pd
 hist_df = pd.DataFrame(history.history) 
-hist_json_file = 'history_classification_model_v2_150e.json' 
+hist_json_file = 'history_classification_model_v2_200e.json' 
 with open(hist_json_file, mode='w') as f:
     hist_df.to_json(f)
 
 # download the model in computer for later use
-model.save('classification_model_v2_blood_150epochs.h5')
+model.save('classification_model_v2_blood_200epochs.h5')
 
 
 from tensorflow import keras
-model = keras.models.load_model('classification_model_v2_blood_150epochs.h5')
+model = keras.models.load_model('classification_model_v2_blood_200epochs.h5')
 
 
 test_gen = get_data_generator(df, test_idx, for_training=False, batch_size=128)
