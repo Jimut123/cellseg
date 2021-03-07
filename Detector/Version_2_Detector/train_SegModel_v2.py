@@ -141,21 +141,13 @@ from PIL import Image
 def get_data_generator(df, indices, for_training, batch_size=16):
     images, labels = [], []
     while True:
-        #print("indices = ",indices)    
-        #print("len indices = ",len(indices))
         for i in indices:
-
             r = df.iloc[i]
-            #print(" r = ", r, " i = ",i)
             file, label = r['file'], r['label']
-            #print("file, label = ",file, label)
             im = Image.open(file)
             im = im.resize((360, 360))
             im = np.array(im) / 255.0
-            #print(im.shape)
             images.append(im)
-            #print(np.asarray([to_categorical(index[label], N_LABELS)]))
-            #print(np.asarray([to_categorical(index[label], N_LABELS)]).shape)
             labels.append(to_categorical(index[label], N_LABELS))
             if len(images) >= batch_size:
                 yield np.array(images), np.array(labels)
@@ -166,10 +158,8 @@ def get_data_generator(df, indices, for_training, batch_size=16):
 
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow import keras
-# batch_size = 100
-# valid_batch_size = 32
-batch_size = 40
-valid_batch_size = 40
+batch_size = 120
+valid_batch_size = 120
 train_gen = get_data_generator(df, train_idx, for_training=True, batch_size=batch_size)
 valid_gen = get_data_generator(df, valid_idx, for_training=True, batch_size=valid_batch_size)
 
@@ -177,6 +167,7 @@ callbacks = [
     #ModelCheckpoint("./model_checkpoint", monitor='val_loss'),
     ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=4)
 ]
+
 # for storing logs into tensorboard
 logdir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
