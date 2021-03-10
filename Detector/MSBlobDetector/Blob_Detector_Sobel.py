@@ -99,15 +99,47 @@ for im_name in all_imgs:
             blank_img = np.zeros((360,360))
             color = (1, 1, 1, 0)
             cv2.circle(blank_img, (int(x), int(y)), int(r), color, thickness=-1)
-            factor = math.exp(math.sqrt(r))*blank_img
-            seg_map_conf += blank_img
+            factor = math.exp(math.log2(r))*blank_img
+            seg_map_conf += factor
             ax[idx].add_patch(c)
         ax[idx].set_axis_off()
     
     plt.tight_layout()
     plt.show()
+    print(seg_map_conf.shape)
     plt.imshow(seg_map_conf)
     plt.show()
+    flat=seg_map_conf.flatten()
+    mean = np.mean(flat)
+    print("mean = ",mean)
+    print(flat.max())
+    unique_set = list(set(flat))
+    unique_set.sort()
+    print("unique set = ",unique_set)
+    set_val = int(len(unique_set)/1.2)
+    print("set val = ",set_val)
+    print("unique_set[set_val] = ",unique_set[set_val])
+    # ret, thres = cv2.threshold(seg_map_conf,unique_set[set_val],unique_set[-1],cv2.THRESH_OTSU)
+    # plt.imshow(thres)
+    # plt.show()
+    # seg_map_conf[seg_map_conf > unique_set[set_val]] = 1
+    seg_map_conf[seg_map_conf < unique_set[set_val]] = 0
+    plt.imshow(seg_map_conf)
+    plt.show()
+    kernel = np.ones((5,5),np.uint8) #cv2.getGaussianKernel(5, 0)
+    erosion = cv2.erode(seg_map_conf,kernel,iterations = 5)
+    plt.imshow(erosion)
+    plt.show()
+    img_color_mask = src.copy()
+    img_color_mask[:,:,0] = erosion*0.5 + src[:,:,0]*0.5
+    img_color_mask[:,:,1] = src[:,:,1]
+    img_color_mask[:,:,2] = src[:,:,2]
+    # img_color_mask = img_color_mask*2
+    # img_color_mask = np.clip(img_color_mask, 0, 1)
+    plt.imshow(img_color_mask)
+    plt.show()
+
+
 
 
 
