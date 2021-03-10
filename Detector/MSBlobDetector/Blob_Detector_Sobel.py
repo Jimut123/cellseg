@@ -8,6 +8,14 @@ import glob
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+from math import sqrt
+from skimage import data
+from skimage.feature import blob_dog, blob_log, blob_doh
+from skimage.color import rgb2gray
+
+
+
 # Read image
 all_imgs = glob.glob('../samples/*')
 
@@ -42,42 +50,46 @@ for i_loop in range(10):
             ax1.imshow(grad, cmap="gray")
 plt.show()
 
-fig = plt.figure()
-counter = 1
-total_thresh = np.zeros((360, 360))
-for imgs in sobel_imgs:
-    # mean = np.mean(imgs)
-    # mean = np.max(imgs)
-    print(imgs.shape)
-    hist = cv2.calcHist([imgs],[0],None,[256],[0,256])
-    mean = hist[128]
-    print("mean = ",mean)
-    ret, thres = cv2.threshold(imgs,0,mean,cv2.THRESH_OTSU)
-    ax1 = fig.add_subplot(3,3,counter)
-    ax1.imshow(thres, cmap="gray")
-    total_thresh += imgs
-    counter += 1
+
+
+# https://scikit-image.org/docs/dev/auto_examples/features_detection/plot_blob.html
+
+imgs = sobel_imgs[1]
+# imgs = sobel_imgs[4]
+image = imgs
+image_gray = imgs
+blobs_log = blob_log(image_gray, max_sigma=90, num_sigma=10, threshold=0.25)
+
+# Compute radii in the 3rd column.
+blobs_log[:, 2] = blobs_log[:, 2] * sqrt(2)
+
+blobs_dog = blob_dog(image_gray, max_sigma=80, threshold=1)
+blobs_dog[:, 2] = blobs_dog[:, 2] * sqrt(2)
+
+blobs_doh = blob_doh(image_gray, max_sigma=90, threshold=0.01)
+
+blobs_list = [blobs_log, blobs_dog, blobs_doh]
+colors = ['yellow', 'lime', 'red']
+titles = ['Laplacian of Gaussian', 'Difference of Gaussian',
+        'Determinant of Hessian']
+
+sequence = zip(blobs_list, colors, titles)
+
+fig, axes = plt.subplots(1, 3, figsize=(9, 3), sharex=True, sharey=True)
+ax = axes.ravel()
+
+for idx, (blobs, color, title) in enumerate(sequence):
+    ax[idx].set_title(title)
+    ax[idx].imshow(image)
+    for blob in blobs:
+        y, x, r = blob
+        c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
+        ax[idx].add_patch(c)
+    ax[idx].set_axis_off()
+
+plt.tight_layout()
 plt.show()
 
-total_thresh = total_thresh/10
-print("shape = ", total_thresh.shape)
-print("max = ", np.max(total_thresh))
-print("min = ", np.min(total_thresh))
-fig = plt.figure()
-
-blurred_thresh = cv2.GaussianBlur(total_thresh,(5,5),0)
-# ax1 = fig.add_subplot(1,1,counter)
-plt.imshow(blurred_thresh, cmap="gray")
-plt.show()
-# hist = cv2.calcHist([blurred_thresh],[0],None,[256],[0,256])
-# max = hist[256]
-maximum = np.amax(blurred_thresh)
-coord = np.where(blurred_thresh == maximum)
-print("coord = ",coord)
-x, y =  coord[0][0], coord[1][0]
-cv2.rectangle(blurred_thresh,(x-70,y-70),(x+100,y+100),(0,255,0),2)
-plt.imshow(blurred_thresh, cmap="gray")
-plt.show()
 
 
 

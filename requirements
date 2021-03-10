@@ -1,0 +1,8 @@
+scikit-image
+scikit-learn
+numpy
+pandas
+keras
+tensorflow
+tensorflow-gpu
+python3-opencv

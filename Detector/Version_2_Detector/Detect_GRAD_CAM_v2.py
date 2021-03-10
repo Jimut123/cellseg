@@ -353,17 +353,25 @@ for img_file in all_files_samples:
     # plt.show()
     ax5 = fig.add_subplot(8,5,36)
     ax5.imshow(added_heatmap)
-    maximum = np.amax(added_heatmap)
-    print("maximum = ",maximum)
+    
     # ret, binary_thresh = cv2.threshold(added_heatmap,maximum - 6,maximum,cv2.THRESH_BINARY)
     # plt.imshow(binary_thresh) 
     # plt.show()
-
+    maximum = np.amax(added_heatmap)
     coord = np.where(added_heatmap == maximum)
 
     x, y = coord[0][0], coord[1][0]
+
+    # all_x, all_y = coord[0], coord[1]
+    # x_max = np.max(all_x)
+    # x_min = np.min(all_x)
+    # y_max = np.max(all_y)
+    # y_min = np.min(all_y)
+    # x, y = int((x_min+x_max)/2), int((y_min+y_max)/2)
+    # print("Coord = ",x,y)
+
     print("Coord = ",x,y)
-    cv2.rectangle(img,(x-70,y-70),(x+100,y+100),(0,255,0),2)
+    cv2.rectangle(img,(x-100,y-100),(x+100,y+100),(0,255,0),2)
     ax5 = fig.add_subplot(8,5,37)
     ax5.imshow(img)
     plt.show()
@@ -377,6 +385,21 @@ for img_file in all_files_samples:
         plt.title("Prediction = {}".format(predicted_name),fontsize=20).set_color('red')
     
     plt.xlabel('true: {}'.format(img_save_name),fontsize=20)
+    plt.show()
+    w_thres = np.zeros((360,360))
+    print("maximum = ",maximum)
+    mean = np.mean(added_heatmap)
+    print("mean = ", mean)
+    for i_ in range(360):
+        for j_ in range(360):
+            # plt.imshow(added_heatmap[i_:i_+30,j_:j_+30])
+            # plt.show()
+            if added_heatmap[i_:i_+30,j_:j_+30].any() >= mean:
+                print("i_ = {}, j_ = {}".format(i_,j_))
+                w_thres[i_:i_+30,j_:j_+30] = maximum
+            j_+= 30
+        i_+= 30
+    plt.imshow(w_thres)
     plt.show()
     """
     import plotly.graph_objects as go

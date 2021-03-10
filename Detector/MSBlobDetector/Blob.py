@@ -1,3 +1,12 @@
+
+import sys
+import cv2 
+import glob
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+
 # Setup SimpleBlobDetector parameters.
 params = cv2.SimpleBlobDetector_Params()
 
