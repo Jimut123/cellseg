@@ -5,6 +5,7 @@
 import sys
 import cv2 
 import glob
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -56,18 +57,21 @@ for im_name in all_imgs:
 
     fig, axes = plt.subplots(1, 3, figsize=(9, 3), sharex=True, sharey=True)
     ax = axes.ravel()
+    
+    
 
     for idx, (blobs, color, title) in enumerate(sequence):
         ax[idx].set_title(title)
         ax[idx].imshow(image,cmap='gray')
         for blob in blobs:
             y, x, r = blob
-            c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
+            c = plt.Circle((int(x), int(y)), int(r), color=color, linewidth=2, fill=False)
+            
             ax[idx].add_patch(c)
         ax[idx].set_axis_off()
-
     plt.tight_layout()
     plt.show()
+    
 
 
 

@@ -5,6 +5,7 @@
 import sys
 import cv2 
 import glob
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -59,7 +60,7 @@ for im_name in all_imgs:
     # for imgs in sobel_imgs:
     imgs = sobel_imgs[2]
     imgs = cv2.GaussianBlur(imgs,(5,5),0)
-    
+
     image = imgs
     image_gray = imgs
     blobs_log = blob_log(image_gray, max_sigma=80, num_sigma=10, threshold=0.1)
@@ -88,17 +89,24 @@ for im_name in all_imgs:
 
     fig, axes = plt.subplots(1, 3, figsize=(9, 3), sharex=True, sharey=True)
     ax = axes.ravel()
-
+    seg_map_conf = np.zeros((360,360))
     for idx, (blobs, color, title) in enumerate(sequence):
         ax[idx].set_title(title)
         ax[idx].imshow(image)
         for blob in blobs:
             y, x, r = blob
             c = plt.Circle((x, y), r, color=color, linewidth=2, fill=False)
+            blank_img = np.zeros((360,360))
+            color = (1, 1, 1, 0)
+            cv2.circle(blank_img, (int(x), int(y)), int(r), color, thickness=-1)
+            factor = math.exp(math.sqrt(r))*blank_img
+            seg_map_conf += blank_img
             ax[idx].add_patch(c)
         ax[idx].set_axis_off()
-
+    
     plt.tight_layout()
+    plt.show()
+    plt.imshow(seg_map_conf)
     plt.show()
 
 
