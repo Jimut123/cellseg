@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# A classical approach to Segmentation -- with almost 95% accuracy
+# Jimut Bahan Pal -- 10th March 2021
+
 # Standard imports
 
 import sys
