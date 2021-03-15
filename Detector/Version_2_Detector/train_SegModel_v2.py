@@ -1,3 +1,23 @@
+
+from tensorflow.keras.utils import to_categorical
+from PIL import Image
+
+import tensorflow as tf
+from keras.regularizers import l2
+from tensorflow.keras import datasets, layers, models
+from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D,\
+                                    GlobalMaxPool2D, Dropout, SpatialDropout2D, add, concatenate
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.models import Model
+
+
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow import keras
+
+from tensorflow import keras
+import pandas as pd
+
 import matplotlib.pyplot as plt
 from datetime import datetime
 import pandas as pd
@@ -6,6 +26,7 @@ import glob
 import time
 import cv2
 import os
+
 
 dir = glob.glob('PBC_dataset_normal_DIB/*')
 get_freq = {}
@@ -95,14 +116,7 @@ print('train count: %s, valid count: %s, test count: %s' % (
     len(train_idx), len(valid_idx), len(test_idx)))
 
 
-import tensorflow as tf
-from keras.regularizers import l2
-from tensorflow.keras import datasets, layers, models
-from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D,\
-                                    GlobalMaxPool2D, Dropout, SpatialDropout2D, add, concatenate
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.models import Model
+
 
 def Model_V2_Gradcam(H,W,C):
 
@@ -139,8 +153,7 @@ model.summary()
 
 
 
-from tensorflow.keras.utils import to_categorical
-from PIL import Image
+
 
 def get_data_generator(df, indices, for_training, batch_size=16):
     images, labels = [], []
@@ -160,8 +173,6 @@ def get_data_generator(df, indices, for_training, batch_size=16):
             break
 
 
-from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow import keras
 batch_size = 90
 valid_batch_size = 90
 train_gen = get_data_generator(df, train_idx, for_training=True, batch_size=batch_size)
@@ -183,7 +194,7 @@ history = model.fit(train_gen,
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
 
-import pandas as pd
+
 hist_df = pd.DataFrame(history.history) 
 hist_json_file = 'history_classification_model_v2_100e.json' 
 with open(hist_json_file, mode='w') as f:
@@ -193,7 +204,6 @@ with open(hist_json_file, mode='w') as f:
 model.save('classification_model_v2_blood_100epochs.h5')
 
 
-from tensorflow import keras
 model = keras.models.load_model('classification_model_v2_blood_100epochs.h5')
 
 
