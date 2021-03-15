@@ -128,7 +128,7 @@ def Model_V2_Gradcam(H,W,C):
     model = tf.keras.models.Model(inputs=input_layer, outputs=x)
     return model
 
-model = Model_V2_Gradcam(H=80, W=80, C=3)
+model = Model_V2_Gradcam(H=360, W=360, C=3)
 
 model.compile(optimizer='adam', loss='categorical_crossentropy',
             metrics= ['accuracy'])
