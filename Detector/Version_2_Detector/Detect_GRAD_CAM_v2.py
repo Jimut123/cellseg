@@ -34,30 +34,31 @@ from utils import get_img_array, make_gradcam_heatmap, get_jet_img
 ###########################################
 #  LOAD MODEL
 
-H, W, C = 360, 360, 3
-N_LABELS = 8
+def Model_V2_Gradcam(H,W,C):
 
+    input_layer = tf.keras.Input(shape=(H, W, C))
+    x_1 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(input_layer)
+    x_2 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_1)
+    # x_4 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_64_21", padding='same')(add([x_3,x_1]))
+    x_3 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool3")(x_2)
+    x_4 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_3)
+    x_5 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_4)
 
-input_layer = tf.keras.Input(shape=(H, W, C))
-x_1 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(input_layer)
-x_2 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_1)
-# x_4 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_64_21", padding='same')(add([x_3,x_1]))
-x_3 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool3")(x_2)
-x_4 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_3)
-x_5 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_4)
+    x_6 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool4")(x_5)
+    x_7 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_6)
+    x_8 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_7)
+    x = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool5")(x_8)
+    x = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(2, 2), name="conv_64_3", kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x)
+    x = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool6")(x)
+    x = tf.keras.layers.Flatten(name="flatten")(x)
+    x = tf.keras.layers.Dropout(0.15, name="dropout_3")(x)
+    x = tf.keras.layers.Dense(256, activation='relu', name="dense_64")(x)
+    x = tf.keras.layers.Dense(N_LABELS, activation='softmax', name="output_layer")(x)
 
-x_6 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool4")(x_5)
-x_7 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_6)
-x_8 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_7)
-x = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool5")(x_8)
-x = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(2, 2), name="conv_64_3", kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x)
-x = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool6")(x)
-x = tf.keras.layers.Flatten(name="flatten")(x)
-x = tf.keras.layers.Dropout(0.15, name="dropout_3")(x)
-x = tf.keras.layers.Dense(256, activation='relu', name="dense_64")(x)
-x = tf.keras.layers.Dense(N_LABELS, activation='softmax', name="output_layer")(x)
+    model = tf.keras.models.Model(inputs=input_layer, outputs=x)
+    return model
 
-model = tf.keras.models.Model(inputs=input_layer, outputs=x)
+model = Model_V2_Gradcam(H=360, W=360, C=3)
 
 model.compile(optimizer='adam', 
               loss='categorical_crossentropy',
@@ -65,7 +66,7 @@ model.compile(optimizer='adam',
 model.summary()
 
 
-model = keras.models.load_model('classification_model_v2_blood_150epochs.h5')
+model = keras.models.load_model('classification_model_v2_blood_100epochs.h5')
 
 print("MODEL LOADED!")
 
