@@ -35,7 +35,7 @@ from utils import get_img_array, make_gradcam_heatmap, get_jet_img
 #  LOAD MODEL
 
 def Model_V2_Gradcam(H,W,C):
-
+    N_LABELS = 8
     input_layer = tf.keras.Input(shape=(H, W, C))
     x_1 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(input_layer)
     x_2 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_1)
@@ -66,7 +66,7 @@ model.compile(optimizer='adam',
 model.summary()
 
 
-model = keras.models.load_model('classification_model_v2_blood_100epochs.h5')
+model = keras.models.load_model('classification_model_v2_blood_20epochs.h5')
 
 print("MODEL LOADED!")
 
