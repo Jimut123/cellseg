@@ -2,6 +2,7 @@
 
 # A classical approach to Segmentation -- with almost 95% accuracy
 # Jimut Bahan Pal -- 10th March 2021
+# This file is suited for the PCB Dataset
 
 # Standard imports
 
@@ -26,9 +27,10 @@ all_imgs = glob.glob('../samples/*')
 for im_name in all_imgs:
     # im = cv2.imread(all_imgs[3], cv2.IMREAD_UNCHANGED)
     # colour image value
-    im = cv2.imread(im_name, cv2.IMREAD_UNCHANGED)
+    im = cv2.imread(im_name, cv2.IMREAD_COLOR)
     # resize to standard value
     im = cv2.resize(im, (360, 360))
+    print("image shape = ",im.shape)
     src = im
 
     scale = 1
