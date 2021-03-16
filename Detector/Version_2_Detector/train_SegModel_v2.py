@@ -1,3 +1,23 @@
+
+from tensorflow.keras.utils import to_categorical
+from PIL import Image
+
+import tensorflow as tf
+from keras.regularizers import l2
+from tensorflow.keras import datasets, layers, models
+from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D,\
+                                    GlobalMaxPool2D, Dropout, SpatialDropout2D, add, concatenate
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.models import Model
+
+
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow import keras
+
+from tensorflow import keras
+import pandas as pd
+
 import matplotlib.pyplot as plt
 from datetime import datetime
 import pandas as pd
@@ -6,6 +26,7 @@ import glob
 import time
 import cv2
 import os
+
 
 dir = glob.glob('PBC_dataset_normal_DIB/*')
 get_freq = {}
@@ -95,39 +116,36 @@ print('train count: %s, valid count: %s, test count: %s' % (
     len(train_idx), len(valid_idx), len(test_idx)))
 
 
-import tensorflow as tf
-from keras.regularizers import l2
-from tensorflow.keras import datasets, layers, models
-from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D,\
-                                    GlobalMaxPool2D, Dropout, SpatialDropout2D, add, concatenate
-from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
-from tensorflow.keras.optimizers import SGD
-from tensorflow.keras.models import Model
 
-input_layer = tf.keras.Input(shape=(H, W, C))
-x_1 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(input_layer)
-x_2 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_1)
-# x_4 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_64_21", padding='same')(add([x_3,x_1]))
-x_3 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool3")(x_2)
-x_4 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_3)
-x_5 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_4)
 
-x_6 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool4")(x_5)
-x_7 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_6)
-x_8 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_7)
-x = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool5")(x_8)
-x = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(2, 2), name="conv_64_3", kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x)
-x = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool6")(x)
-x = tf.keras.layers.Flatten(name="flatten")(x)
-x = tf.keras.layers.Dropout(0.15, name="dropout_3")(x)
-x = tf.keras.layers.Dense(256, activation='relu', name="dense_64")(x)
-x = tf.keras.layers.Dense(N_LABELS, activation='softmax', name="output_layer")(x)
+def Model_V2_Gradcam(H,W,C):
 
-model = tf.keras.models.Model(inputs=input_layer, outputs=x)
+    input_layer = tf.keras.Input(shape=(H, W, C))
+    x_1 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(input_layer)
+    x_2 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_16_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_1)
+    # x_4 = tf.keras.layers.Conv2D(16, 3, activation='relu', strides=(1, 1), name="conv_64_21", padding='same')(add([x_3,x_1]))
+    x_3 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool3")(x_2)
+    x_4 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_3)
+    x_5 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_4)
 
-model.compile(optimizer='adam', 
-              loss='categorical_crossentropy',
-              metrics= ['accuracy'])
+    x_6 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool4")(x_5)
+    x_7 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_6)
+    x_8 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_7)
+    x = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool5")(x_8)
+    x = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(2, 2), name="conv_64_3", kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x)
+    x = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool6")(x)
+    x = tf.keras.layers.Flatten(name="flatten")(x)
+    x = tf.keras.layers.Dropout(0.15, name="dropout_3")(x)
+    x = tf.keras.layers.Dense(256, activation='relu', name="dense_64")(x)
+    x = tf.keras.layers.Dense(N_LABELS, activation='softmax', name="output_layer")(x)
+
+    model = tf.keras.models.Model(inputs=input_layer, outputs=x)
+    return model
+
+model = Model_V2_Gradcam(H=360, W=360, C=3)
+
+model.compile(optimizer='adam', loss='categorical_crossentropy',
+            metrics= ['accuracy'])
 model.summary()
 
 
@@ -135,8 +153,7 @@ model.summary()
 
 
 
-from tensorflow.keras.utils import to_categorical
-from PIL import Image
+
 
 def get_data_generator(df, indices, for_training, batch_size=16):
     images, labels = [], []
@@ -156,8 +173,6 @@ def get_data_generator(df, indices, for_training, batch_size=16):
             break
 
 
-from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow import keras
 batch_size = 90
 valid_batch_size = 90
 train_gen = get_data_generator(df, train_idx, for_training=True, batch_size=batch_size)
@@ -174,12 +189,12 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 history = model.fit(train_gen,
                     steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=100,
+                    epochs=5,
                     callbacks=[tensorboard_callback,callbacks],
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
 
-import pandas as pd
+
 hist_df = pd.DataFrame(history.history) 
 hist_json_file = 'history_classification_model_v2_100e.json' 
 with open(hist_json_file, mode='w') as f:
@@ -189,7 +204,6 @@ with open(hist_json_file, mode='w') as f:
 model.save('classification_model_v2_blood_100epochs.h5')
 
 
-from tensorflow import keras
 model = keras.models.load_model('classification_model_v2_blood_100epochs.h5')
 
 
