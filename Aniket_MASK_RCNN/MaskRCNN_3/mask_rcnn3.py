@@ -4,6 +4,7 @@ import random
 import math
 import numpy as np
 import skimage.io
+import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 import cv2
@@ -249,11 +250,11 @@ def train(model, dataset_dir):
     print("Train network heads")
     history_network_heads = model.train(dataset_train, dataset_val,
                                 learning_rate=config.LEARNING_RATE,
-                                epochs=10,
+                                epochs=4,
                                 augmentation=augmentation,
                                 layers='heads')
     
-    hist_df_nh = pd.DataFrame(history_network_heads.history)
+    hist_df_nh = pd.DataFrame(history_network_heads)
     hist_json_file = 'history_network_heads.json'
     with open(hist_json_file, mode='w') as f:
         hist_df_nh.to_json(f)
@@ -261,11 +262,11 @@ def train(model, dataset_dir):
     print("Train all layers")
     history_dataset_train = model.train(dataset_train, dataset_val,
                                 learning_rate=config.LEARNING_RATE,
-                                epochs=15,
+                                epochs=4,
                                 augmentation=augmentation,
                                 layers='all')
     
-    hist_df_dt = pd.DataFrame(history_dataset_train.history)
+    hist_df_dt = pd.DataFrame(history_dataset_train)
     hist_json_file = 'history_dataset_train.json'
     with open(hist_json_file, mode='w') as f:
         hist_df_dt.to_json(f)
