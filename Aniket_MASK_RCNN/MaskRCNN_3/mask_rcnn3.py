@@ -8,10 +8,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 import cv2
 from imgaug import augmenters as iaa
-# %tensorflow_version 1.x
+# tensorflow_version 1.1.4
 
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+# import tensorflow.compat.v1 as tf
+import tensorflow as tf
+# tf.disable_v2_behavior()
 
 # import tensorflow as tf
 # from tensorflow.python.keras.layers import  Input, Embedding, Dot, Reshape, Dense

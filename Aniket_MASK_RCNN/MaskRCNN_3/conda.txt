@@ -1,4 +1,17 @@
 # https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda/
 conda create -n aniket_mask_rcnn3 python=3.7 anaconda
+
 source activate aniket_mask_rcnn3
-conda install -n aniket_mask_rcnn3 [package]
+
+
+#conda install -n aniket_mask_rcnn3 [package]
+
+pip install keras==2.2.5
+pip install opencv-python
+pip install pycocotools
+pip install imgaug
+conda install tensorflow
+conda install -c anaconda absl-py
+conda install tensorflow==1.15.0
+
+
