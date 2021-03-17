@@ -1,0 +1,4 @@
+# https://uoa-eresearch.github.io/eresearch-cookbook/recipe/2014/11/20/conda/
+conda create -n aniket_mask_rcnn3 python=3.7 anaconda
+source activate aniket_mask_rcnn3
+conda install -n aniket_mask_rcnn3 [package]

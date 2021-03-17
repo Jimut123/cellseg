@@ -9,7 +9,15 @@ import matplotlib.pyplot as plt
 import cv2
 from imgaug import augmenters as iaa
 # %tensorflow_version 1.x
+
 import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+
+# import tensorflow as tf
+# from tensorflow.python.keras.layers import  Input, Embedding, Dot, Reshape, Dense
+# from tensorflow.python.keras.models import Model
+
+
 # Root directory of the project
 ROOT_DIR = os.path.abspath("./Mask_RCNN/")
 sys.path.append(ROOT_DIR)
