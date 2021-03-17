@@ -10,9 +10,17 @@ import cv2
 from imgaug import augmenters as iaa
 # tensorflow_version 1.1.4
 
-# import tensorflow.compat.v1 as tf
-import tensorflow as tf
-# tf.disable_v2_behavior()
+# sed -i "s/self.keras_model.add_metric(loss, name)/self.keras_model.metrics_tensors.append(loss)/g" mrcnn/model.py
+
+import tensorflow.compat.v1 as tf
+import keras
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True
+sess = tf.Session(config=config)
+# import tensorflow as tf
+tf.disable_v2_behavior()
+
+
 
 # import tensorflow as tf
 # from tensorflow.python.keras.layers import  Input, Embedding, Dot, Reshape, Dense
@@ -270,7 +278,7 @@ model = modellib.MaskRCNN(mode="training", config=config,
 weights_path = model.get_imagenet_weights()
 model.load_weights(weights_path, by_name=True)
 
-train(model, "/content/dataset")
+train(model, "./dataset")
 
 
 def get_ax(rows=1, cols=1, size=8):
@@ -301,7 +309,7 @@ def searchKeysByVal(dict, byVal):
 
 # Test on a random image
 dataset_val = BloodDataset()
-dataset_val.load_blood("/content/dataset", "val")
+dataset_val.load_blood("./dataset", "val")
 dataset_val.prepare()
 image_id = random.choice(dataset_val.image_ids)
 

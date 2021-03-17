@@ -12,6 +12,7 @@ pip install pycocotools
 pip install imgaug
 conda install tensorflow
 conda install -c anaconda absl-py
-conda install tensorflow==1.15.0
+conda install tensorflow==1.15.3
+pip install -U scikit-image==0.16.2
 
 
