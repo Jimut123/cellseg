@@ -30,3 +30,4 @@ for im_name in all_imgs:
     fig = go.Figure(data=[
         go.Surface(z=im)])
     fig.show()
+    input("enter a key")
