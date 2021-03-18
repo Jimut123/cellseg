@@ -12,6 +12,10 @@ from tensorflow.keras.models import Model
 from keras.regularizers import l2
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
+import math
+from math import sqrt
+from skimage.feature import blob_dog, blob_log, blob_doh
+from skimage.color import rgb2gray
 
 # Display
 
@@ -410,7 +414,7 @@ for img_file in all_files_samples:
     abs_grad_x = cv2.convertScaleAbs(grad_x)
     abs_grad_y = cv2.convertScaleAbs(grad_y)
     grad = cv2.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0)
-    kernel =  np.ones((10,10),np.uint8) #cv2.getGaussianKernel(5, 0)
+    kernel = np.ones((10,10),np.uint8) #cv2.getGaussianKernel(5, 0)
     
     dilation = cv2.dilate(grad,kernel,iterations = 5)
     dilation = dilation/np.max(dilation)
