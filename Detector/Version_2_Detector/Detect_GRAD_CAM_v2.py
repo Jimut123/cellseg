@@ -402,12 +402,12 @@ for img_file in all_files_samples:
         i_+= 30
     plt.imshow(w_thres)
     plt.show()
-    """
+    
     import plotly.graph_objects as go
     fig = go.Figure(data=[
         go.Surface(z=added_heatmap)])
     fig.show()
-    """
+    input("Enter a key")
     # 36 grid NMS
     # votes = np.zeros((6,6))
     # for i in range(300):
