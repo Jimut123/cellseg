@@ -3,6 +3,7 @@ from tensorflow.keras.utils import to_categorical
 from PIL import Image
 
 import tensorflow as tf
+
 from keras.regularizers import l2
 from tensorflow.keras import datasets, layers, models
 from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D,\
@@ -17,6 +18,9 @@ from tensorflow import keras
 
 from tensorflow import keras
 import pandas as pd
+
+
+
 
 import matplotlib.pyplot as plt
 from datetime import datetime
@@ -173,8 +177,8 @@ def get_data_generator(df, indices, for_training, batch_size=16):
             break
 
 
-batch_size = 90
-valid_batch_size = 90
+batch_size = 120
+valid_batch_size = 120
 train_gen = get_data_generator(df, train_idx, for_training=True, batch_size=batch_size)
 valid_gen = get_data_generator(df, valid_idx, for_training=True, batch_size=valid_batch_size)
 
@@ -189,7 +193,7 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 history = model.fit(train_gen,
                     steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=5,
+                    epochs=100,
                     callbacks=[tensorboard_callback,callbacks],
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
