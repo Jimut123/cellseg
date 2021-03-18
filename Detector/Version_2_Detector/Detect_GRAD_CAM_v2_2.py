@@ -146,55 +146,55 @@ for img_file in all_files_samples:
     # Display Grad CAM
 
 
-    last_conv_layer_name = "conv_64_2" #"dense_2" 
-    classifier_layer_names = [
-        "max_pool5",      
-        "conv_64_3",    
-        "max_pool6",         
-        "flatten",         
-        "dropout_3",       
-        "dense_64",  
-        "output_layer"
-    ]
+    # last_conv_layer_name = "conv_64_2" #"dense_2" 
+    # classifier_layer_names = [
+    #     "max_pool5",      
+    #     "conv_64_3",    
+    #     "max_pool6",         
+    #     "flatten",         
+    #     "dropout_3",       
+    #     "dense_64",  
+    #     "output_layer"
+    # ]
 
-    # Generate class activation heatmap
-    heatmap = make_gradcam_heatmap(
-        img_array, model, last_conv_layer_name, classifier_layer_names
-    )
+    # # Generate class activation heatmap
+    # heatmap = make_gradcam_heatmap(
+    #     img_array, model, last_conv_layer_name, classifier_layer_names
+    # )
 
-    img = get_img
-    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
-    print("--"*60,img.shape)
-    all_img.append(img)
-    all_heatmap.append(heatmap)
-    all_heatmap_.append(heatmap_)
-    all_superimposed_img.append(superimposed_img)
+    # img = get_img
+    # img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    # print("--"*60,img.shape)
+    # all_img.append(img)
+    # all_heatmap.append(heatmap)
+    # all_heatmap_.append(heatmap_)
+    # all_superimposed_img.append(superimposed_img)
     
 
-    last_conv_layer_name = "conv_64_1" 
-    classifier_layer_names = [
-       "conv_64_2",    
-        "max_pool5",      
-        "conv_64_3",    
-        "max_pool6",         
-        "flatten",         
-        "dropout_3",       
-        "dense_64",  
-        "output_layer"
-    ]
+    # last_conv_layer_name = "conv_64_1" 
+    # classifier_layer_names = [
+    #    "conv_64_2",    
+    #     "max_pool5",      
+    #     "conv_64_3",    
+    #     "max_pool6",         
+    #     "flatten",         
+    #     "dropout_3",       
+    #     "dense_64",  
+    #     "output_layer"
+    # ]
 
-    # Generate class activation heatmap
-    heatmap = make_gradcam_heatmap(
-        img_array, model, last_conv_layer_name, classifier_layer_names
-    )
+    # # Generate class activation heatmap
+    # heatmap = make_gradcam_heatmap(
+    #     img_array, model, last_conv_layer_name, classifier_layer_names
+    # )
 
-    img = get_img
-    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
-    print("--"*60,img.shape)
-    all_img.append(img)
-    all_heatmap.append(heatmap)
-    all_heatmap_.append(heatmap_)
-    all_superimposed_img.append(superimposed_img)
+    # img = get_img
+    # img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    # print("--"*60,img.shape)
+    # all_img.append(img)
+    # all_heatmap.append(heatmap)
+    # all_heatmap_.append(heatmap_)
+    # all_superimposed_img.append(superimposed_img)
     
     
 
@@ -254,66 +254,66 @@ for img_file in all_files_samples:
     all_superimposed_img.append(superimposed_img)
 
 
-    last_conv_layer_name = "conv_16_2"
-    classifier_layer_names = [
-        "max_pool3",     
-        "conv_32_1",   
-        "conv_32_2",    
-        "max_pool4",   
-        "conv_64_1",    
-        "conv_64_2",    
-        "max_pool5",      
-        "conv_64_3",    
-        "max_pool6",         
-        "flatten",         
-        "dropout_3",       
-        "dense_64",  
-        "output_layer"
-    ]
+    # last_conv_layer_name = "conv_16_2"
+    # classifier_layer_names = [
+    #     "max_pool3",     
+    #     "conv_32_1",   
+    #     "conv_32_2",    
+    #     "max_pool4",   
+    #     "conv_64_1",    
+    #     "conv_64_2",    
+    #     "max_pool5",      
+    #     "conv_64_3",    
+    #     "max_pool6",         
+    #     "flatten",         
+    #     "dropout_3",       
+    #     "dense_64",  
+    #     "output_layer"
+    # ]
 
-    # Generate class activation heatmap
-    heatmap = make_gradcam_heatmap(
-        img_array, model, last_conv_layer_name, classifier_layer_names
-    )
+    # # Generate class activation heatmap
+    # heatmap = make_gradcam_heatmap(
+    #     img_array, model, last_conv_layer_name, classifier_layer_names
+    # )
 
-    img = get_img
-    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
-    print("--"*60,img.shape)
-    all_img.append(img)
-    all_heatmap.append(heatmap)
-    all_heatmap_.append(heatmap_)
-    all_superimposed_img.append(superimposed_img)
+    # img = get_img
+    # img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    # print("--"*60,img.shape)
+    # all_img.append(img)
+    # all_heatmap.append(heatmap)
+    # all_heatmap_.append(heatmap_)
+    # all_superimposed_img.append(superimposed_img)
 
-    last_conv_layer_name = "conv_16_1"
-    classifier_layer_names = [
-       "conv_16_2",
-        "max_pool3",     
-        "conv_32_1",   
-        "conv_32_2",    
-        "max_pool4",   
-        "conv_64_1",    
-        "conv_64_2",    
-        "max_pool5",      
-        "conv_64_3",    
-        "max_pool6",         
-        "flatten",         
-        "dropout_3",       
-        "dense_64",  
-        "output_layer"
-    ]
+    # last_conv_layer_name = "conv_16_1"
+    # classifier_layer_names = [
+    #    "conv_16_2",
+    #     "max_pool3",     
+    #     "conv_32_1",   
+    #     "conv_32_2",    
+    #     "max_pool4",   
+    #     "conv_64_1",    
+    #     "conv_64_2",    
+    #     "max_pool5",      
+    #     "conv_64_3",    
+    #     "max_pool6",         
+    #     "flatten",         
+    #     "dropout_3",       
+    #     "dense_64",  
+    #     "output_layer"
+    # ]
 
-    # Generate class activation heatmap
-    heatmap = make_gradcam_heatmap(
-        img_array, model, last_conv_layer_name, classifier_layer_names
-    )
+    # # Generate class activation heatmap
+    # heatmap = make_gradcam_heatmap(
+    #     img_array, model, last_conv_layer_name, classifier_layer_names
+    # )
 
-    img = get_img
-    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
-    print("--"*60,img.shape)
-    all_img.append(img)
-    all_heatmap.append(heatmap)
-    all_heatmap_.append(heatmap_)
-    all_superimposed_img.append(superimposed_img)
+    # img = get_img
+    # img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    # print("--"*60,img.shape)
+    # all_img.append(img)
+    # all_heatmap.append(heatmap)
+    # all_heatmap_.append(heatmap_)
+    # all_superimposed_img.append(superimposed_img)
 
     
     fig = plt.figure()
