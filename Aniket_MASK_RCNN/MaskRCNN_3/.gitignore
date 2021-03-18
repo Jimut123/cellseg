@@ -1,3 +1,8 @@
 dataset.tar.gz
-Mask_RCNN/
+# Mask_RCNN/
 dataset
+Mask_RCNN/assets
+Mask_RCNN/build
+Mask_RCNN/dist
+Mask_RCNN/logs
+Mask_RCNN/images

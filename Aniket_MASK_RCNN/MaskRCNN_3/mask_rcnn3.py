@@ -4,6 +4,7 @@ import random
 import math
 import numpy as np
 import skimage.io
+import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 import cv2
@@ -37,6 +38,7 @@ import mrcnn.model as modellib
 from mrcnn import visualize
 from mrcnn.model import log
 
+from keras.callbacks import ModelCheckpoint
 # Import COCO config
 sys.path.append(os.path.join(ROOT_DIR, "samples/coco/"))  # find local version
 import coco
@@ -247,12 +249,21 @@ def train(model, dataset_dir):
     # If starting from imagenet, train heads only for a bit
     # since they have random weights
     print("Train network heads")
+    check_path = os.path.join(MODEL_DIR, "mask_rcnn_{}_*epoch*.h5".format(
+            "blood"))
+    callbacks = [
+    #     ModelCheckpoint(check_path,
+    #                                         verbose=0, save_weights_only=False)
+    ]
     history_network_heads = model.train(dataset_train, dataset_val,
                                 learning_rate=config.LEARNING_RATE,
-                                epochs=10,
+                                epochs=150,
                                 augmentation=augmentation,
+                                custom_callbacks=callbacks,
                                 layers='heads')
-    
+    # print(history_network_heads)
+    # with open('head', 'w') as f:
+    #     f.write(history_network_heads)
     hist_df_nh = pd.DataFrame(history_network_heads.history)
     hist_json_file = 'history_network_heads.json'
     with open(hist_json_file, mode='w') as f:
@@ -261,10 +272,12 @@ def train(model, dataset_dir):
     print("Train all layers")
     history_dataset_train = model.train(dataset_train, dataset_val,
                                 learning_rate=config.LEARNING_RATE,
-                                epochs=15,
+                                epochs=150,
                                 augmentation=augmentation,
                                 layers='all')
     
+    # with open('all', 'w') as f:
+    #     f.write(history_dataset_train)
     hist_df_dt = pd.DataFrame(history_dataset_train.history)
     hist_json_file = 'history_dataset_train.json'
     with open(hist_json_file, mode='w') as f:
@@ -333,3 +346,5 @@ for c, s in zip(r['class_ids'], r['scores']):
   print(searchKeysByVal(name_dict, c), " ===> ", s)
 visualize.display_instances(original_image, r['rois'], r['masks'], r['class_ids'], 
                             dataset_val.class_names, r['scores'], ax=get_ax())
+plt.savefig('result.jpg')
+plt.close()
