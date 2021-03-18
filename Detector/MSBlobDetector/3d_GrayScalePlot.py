@@ -22,6 +22,7 @@ all_imgs = glob.glob('../samples/*')
 for im_name in all_imgs:
     # im = cv2.imread(all_imgs[3], cv2.IMREAD_UNCHANGED)
     # colour image value
+    print("name = ",im_name)
     im = cv2.imread(im_name, cv2.IMREAD_GRAYSCALE)
     # resize to standard value
     im = cv2.resize(im, (360, 360))
