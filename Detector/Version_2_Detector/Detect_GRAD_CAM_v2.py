@@ -348,8 +348,7 @@ for img_file in all_files_samples:
     print("count = ",count)
     added_heatmap = np.zeros((360,360))
     for thres_ in all_thres:
-        added_heatmap += thres
-        _
+        added_heatmap += thres_
     # plt.show()
     # plt.imshow(added_heatmap) 
     # plt.show()
@@ -444,7 +443,3 @@ for img_file in all_files_samples:
     #         i+=60
     #         j+=60
     
-
-    
-    
-
