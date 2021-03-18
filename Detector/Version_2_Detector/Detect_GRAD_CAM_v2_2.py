@@ -12,10 +12,6 @@ from tensorflow.keras.models import Model
 from keras.regularizers import l2
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
-import math
-from math import sqrt
-from skimage.feature import blob_dog, blob_log, blob_doh
-from skimage.color import rgb2gray
 
 # Display
 
@@ -150,55 +146,55 @@ for img_file in all_files_samples:
     # Display Grad CAM
 
 
-    last_conv_layer_name = "conv_64_2" #"dense_2" 
-    classifier_layer_names = [
-        "max_pool5",      
-        "conv_64_3",    
-        "max_pool6",         
-        "flatten",         
-        "dropout_3",       
-        "dense_64",  
-        "output_layer"
-    ]
+    # last_conv_layer_name = "conv_64_2" #"dense_2" 
+    # classifier_layer_names = [
+    #     "max_pool5",      
+    #     "conv_64_3",    
+    #     "max_pool6",         
+    #     "flatten",         
+    #     "dropout_3",       
+    #     "dense_64",  
+    #     "output_layer"
+    # ]
 
-    # Generate class activation heatmap
-    heatmap = make_gradcam_heatmap(
-        img_array, model, last_conv_layer_name, classifier_layer_names
-    )
+    # # Generate class activation heatmap
+    # heatmap = make_gradcam_heatmap(
+    #     img_array, model, last_conv_layer_name, classifier_layer_names
+    # )
 
-    img = get_img
-    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
-    print("--"*60,img.shape)
-    all_img.append(img)
-    all_heatmap.append(heatmap)
-    all_heatmap_.append(heatmap_)
-    all_superimposed_img.append(superimposed_img)
+    # img = get_img
+    # img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    # print("--"*60,img.shape)
+    # all_img.append(img)
+    # all_heatmap.append(heatmap)
+    # all_heatmap_.append(heatmap_)
+    # all_superimposed_img.append(superimposed_img)
     
 
-    last_conv_layer_name = "conv_64_1" 
-    classifier_layer_names = [
-       "conv_64_2",    
-        "max_pool5",      
-        "conv_64_3",    
-        "max_pool6",         
-        "flatten",         
-        "dropout_3",       
-        "dense_64",  
-        "output_layer"
-    ]
+    # last_conv_layer_name = "conv_64_1" 
+    # classifier_layer_names = [
+    #    "conv_64_2",    
+    #     "max_pool5",      
+    #     "conv_64_3",    
+    #     "max_pool6",         
+    #     "flatten",         
+    #     "dropout_3",       
+    #     "dense_64",  
+    #     "output_layer"
+    # ]
 
-    # Generate class activation heatmap
-    heatmap = make_gradcam_heatmap(
-        img_array, model, last_conv_layer_name, classifier_layer_names
-    )
+    # # Generate class activation heatmap
+    # heatmap = make_gradcam_heatmap(
+    #     img_array, model, last_conv_layer_name, classifier_layer_names
+    # )
 
-    img = get_img
-    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
-    print("--"*60,img.shape)
-    all_img.append(img)
-    all_heatmap.append(heatmap)
-    all_heatmap_.append(heatmap_)
-    all_superimposed_img.append(superimposed_img)
+    # img = get_img
+    # img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    # print("--"*60,img.shape)
+    # all_img.append(img)
+    # all_heatmap.append(heatmap)
+    # all_heatmap_.append(heatmap_)
+    # all_superimposed_img.append(superimposed_img)
     
     
 
@@ -258,66 +254,66 @@ for img_file in all_files_samples:
     all_superimposed_img.append(superimposed_img)
 
 
-    last_conv_layer_name = "conv_16_2"
-    classifier_layer_names = [
-        "max_pool3",     
-        "conv_32_1",   
-        "conv_32_2",    
-        "max_pool4",   
-        "conv_64_1",    
-        "conv_64_2",    
-        "max_pool5",      
-        "conv_64_3",    
-        "max_pool6",         
-        "flatten",         
-        "dropout_3",       
-        "dense_64",  
-        "output_layer"
-    ]
+    # last_conv_layer_name = "conv_16_2"
+    # classifier_layer_names = [
+    #     "max_pool3",     
+    #     "conv_32_1",   
+    #     "conv_32_2",    
+    #     "max_pool4",   
+    #     "conv_64_1",    
+    #     "conv_64_2",    
+    #     "max_pool5",      
+    #     "conv_64_3",    
+    #     "max_pool6",         
+    #     "flatten",         
+    #     "dropout_3",       
+    #     "dense_64",  
+    #     "output_layer"
+    # ]
 
-    # Generate class activation heatmap
-    heatmap = make_gradcam_heatmap(
-        img_array, model, last_conv_layer_name, classifier_layer_names
-    )
+    # # Generate class activation heatmap
+    # heatmap = make_gradcam_heatmap(
+    #     img_array, model, last_conv_layer_name, classifier_layer_names
+    # )
 
-    img = get_img
-    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
-    print("--"*60,img.shape)
-    all_img.append(img)
-    all_heatmap.append(heatmap)
-    all_heatmap_.append(heatmap_)
-    all_superimposed_img.append(superimposed_img)
+    # img = get_img
+    # img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    # print("--"*60,img.shape)
+    # all_img.append(img)
+    # all_heatmap.append(heatmap)
+    # all_heatmap_.append(heatmap_)
+    # all_superimposed_img.append(superimposed_img)
 
-    last_conv_layer_name = "conv_16_1"
-    classifier_layer_names = [
-       "conv_16_2",
-        "max_pool3",     
-        "conv_32_1",   
-        "conv_32_2",    
-        "max_pool4",   
-        "conv_64_1",    
-        "conv_64_2",    
-        "max_pool5",      
-        "conv_64_3",    
-        "max_pool6",         
-        "flatten",         
-        "dropout_3",       
-        "dense_64",  
-        "output_layer"
-    ]
+    # last_conv_layer_name = "conv_16_1"
+    # classifier_layer_names = [
+    #    "conv_16_2",
+    #     "max_pool3",     
+    #     "conv_32_1",   
+    #     "conv_32_2",    
+    #     "max_pool4",   
+    #     "conv_64_1",    
+    #     "conv_64_2",    
+    #     "max_pool5",      
+    #     "conv_64_3",    
+    #     "max_pool6",         
+    #     "flatten",         
+    #     "dropout_3",       
+    #     "dense_64",  
+    #     "output_layer"
+    # ]
 
-    # Generate class activation heatmap
-    heatmap = make_gradcam_heatmap(
-        img_array, model, last_conv_layer_name, classifier_layer_names
-    )
+    # # Generate class activation heatmap
+    # heatmap = make_gradcam_heatmap(
+    #     img_array, model, last_conv_layer_name, classifier_layer_names
+    # )
 
-    img = get_img
-    img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
-    print("--"*60,img.shape)
-    all_img.append(img)
-    all_heatmap.append(heatmap)
-    all_heatmap_.append(heatmap_)
-    all_superimposed_img.append(superimposed_img)
+    # img = get_img
+    # img, heatmap, heatmap_, superimposed_img = get_jet_img(img, heatmap)
+    # print("--"*60,img.shape)
+    # all_img.append(img)
+    # all_heatmap.append(heatmap)
+    # all_heatmap_.append(heatmap_)
+    # all_superimposed_img.append(superimposed_img)
 
     
     fig = plt.figure()
@@ -328,13 +324,13 @@ for img_file in all_files_samples:
 
     for img, heatmap, heatmap_, superimposed_img in zip(all_img, all_heatmap, all_heatmap_, all_superimposed_img):
         count += 1
-        ax1 = fig.add_subplot(7,5,count)
+        ax1 = fig.add_subplot(8,5,count)
         ax1.imshow(img)
         count += 1
-        ax2 = fig.add_subplot(7,5,count)
+        ax2 = fig.add_subplot(8,5,count)
         ax2.imshow(heatmap)
         count += 1
-        ax3 = fig.add_subplot(7,5,count)
+        ax3 = fig.add_subplot(8,5,count)
         ax3.imshow(heatmap_)
         count += 1
         # heatmap_gray = np.array(heatmap_)
@@ -342,10 +338,10 @@ for img_file in all_files_samples:
         # print("*"*50,np.array(heatmap_gray).shape)
         ret, thres = cv2.threshold(heatmap_,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
         all_thres.append(thres)
-        ax3 = fig.add_subplot(7,5,count)
+        ax3 = fig.add_subplot(8,5,count)
         ax3.imshow(thres)
         count += 1
-        ax4 = fig.add_subplot(7,5,count)
+        ax4 = fig.add_subplot(8,5,count)
         ax4.imshow(superimposed_img)
     
     # show the added heatmap here after adding
@@ -356,8 +352,8 @@ for img_file in all_files_samples:
     # plt.show()
     # plt.imshow(added_heatmap) 
     # plt.show()
-    # ax5 = fig.add_subplot(8,5,36)
-    # ax5.imshow(added_heatmap)
+    ax5 = fig.add_subplot(8,5,36)
+    ax5.imshow(added_heatmap)
     
     # ret, binary_thresh = cv2.threshold(added_heatmap,maximum - 6,maximum,cv2.THRESH_BINARY)
     # plt.imshow(binary_thresh) 
@@ -377,8 +373,8 @@ for img_file in all_files_samples:
 
     print("Coord = ",x,y)
     cv2.rectangle(img,(x-100,y-100),(x+100,y+100),(0,255,0),2)
-    # ax5 = fig.add_subplot(8,5,37)
-    # ax5.imshow(img)
+    ax5 = fig.add_subplot(8,5,37)
+    ax5.imshow(img)
     plt.show()
     plt.imshow(added_heatmap) 
     plt.show()
@@ -414,7 +410,7 @@ for img_file in all_files_samples:
     abs_grad_x = cv2.convertScaleAbs(grad_x)
     abs_grad_y = cv2.convertScaleAbs(grad_y)
     grad = cv2.addWeighted(abs_grad_x, 0.5, abs_grad_y, 0.5, 0)
-    kernel = np.ones((10,10),np.uint8) #cv2.getGaussianKernel(5, 0)
+    kernel =  np.ones((10,10),np.uint8) #cv2.getGaussianKernel(5, 0)
     
     dilation = cv2.dilate(grad,kernel,iterations = 5)
     dilation = dilation/np.max(dilation)
@@ -447,3 +443,7 @@ for img_file in all_files_samples:
     #         i+=60
     #         j+=60
     
+
+    
+    
+
