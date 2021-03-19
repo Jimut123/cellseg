@@ -309,7 +309,7 @@ inference_config = BloodInferenceConfig()
 model = modellib.MaskRCNN(mode="inference", config=inference_config,
                                   model_dir=MODEL_DIR)
 # weights_path = model.find_last()
-model.load_weights("Mask_RCNN/logs/blood20210318T1805/mask_rcnn_blood_*epoch*.h5", by_name=True)
+model.load_weights("Mask_RCNN/logs/blood20210318T1812/mask_rcnn_blood_*epoch*.h5", by_name=True)
 
 def searchKeysByVal(dict, byVal):
     keysList = []
@@ -327,7 +327,7 @@ dataset_val.prepare()
 image_id = random.choice(dataset_val.image_ids)
 
 
-original_image = cv2.imread("../../Detector/samples_1/slide_1.png")
+original_image = cv2.imread("../../Detector/samples_1/slide_12.png")
 
 
 
@@ -338,5 +338,5 @@ r = results[0]
 
 visualize.display_instances(original_image, r['rois'], r['masks'], r['class_ids'], 
                             dataset_val.class_names, r['scores'], ax=get_ax(),show_bbox=False)
-plt.savefig('result2.jpg')
+plt.savefig('result_slide_12_mask12.jpg')
 plt.close()

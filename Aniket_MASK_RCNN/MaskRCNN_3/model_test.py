@@ -309,7 +309,7 @@ inference_config = BloodInferenceConfig()
 model = modellib.MaskRCNN(mode="inference", config=inference_config,
                                   model_dir=MODEL_DIR)
 # weights_path = model.find_last()
-model.load_weights("Mask_RCNN/logs/blood20210318T1805/mask_rcnn_blood_*epoch*.h5", by_name=True)
+model.load_weights("Mask_RCNN/logs/blood20210318T1812/mask_rcnn_blood_*epoch*.h5", by_name=True)
 
 def searchKeysByVal(dict, byVal):
     keysList = []
@@ -337,6 +337,7 @@ log("gt_class_id", gt_class_id)
 log("gt_bbox", gt_bbox)
 log("gt_mask", gt_mask)
 
+# print("Meta - data :: ",image_meta)
 results = model.detect([original_image], verbose=1)
 
 r = results[0]
@@ -346,5 +347,9 @@ for c, s in zip(r['class_ids'], r['scores']):
   print(searchKeysByVal(name_dict, c), " ===> ", s)
 visualize.display_instances(original_image, r['rois'], r['masks'], r['class_ids'], 
                             dataset_val.class_names, r['scores'], ax=get_ax(),show_bbox=False)
-plt.savefig('result.jpg')
+# save the image also
+print(dataset_val.image_reference(image_id),"------------")
+img_name = 'result_dataset_img10_{}.jpg'.format(dataset_val.image_reference(image_id).split("_")[0])
+plt.imsave(img_name, original_image )
+plt.savefig('result_dataset_mask10.jpg')
 plt.close()
