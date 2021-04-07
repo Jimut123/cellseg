@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import keras_metrics as km
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -192,7 +193,7 @@ opt = Adam(learning_rate=1e-5)
 
 model.compile(optimizer=opt, 
               loss='categorical_crossentropy',
-              metrics= ['accuracy'])
+              metrics= ['accuracy', km.categorical_precision(), km.categorical_recall(), km.categorical_f1_score()])
 
 model.summary()
 
