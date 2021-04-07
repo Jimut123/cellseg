@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import keras_metrics as km
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -144,6 +143,8 @@ from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, Ma
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from tensorflow.keras.optimizers import SGD, Adam
 from tensorflow.keras.models import Model
+from tensorflow.keras.metrics import AUC, Precision, Recall, SensitivityAtSpecificity, PrecisionAtRecall, \
+                                     TruePositives, TrueNegatives, FalsePositives, FalseNegatives
 
 def Classification(H,W,C):
     
@@ -193,7 +194,8 @@ opt = Adam(learning_rate=1e-5)
 
 model.compile(optimizer=opt, 
               loss='categorical_crossentropy',
-              metrics= ['accuracy', km.categorical_precision(), km.categorical_recall(), km.categorical_f1_score()])
+              metrics= ['accuracy', AUC(curve="ROC"), Precision(), Recall(), SensitivityAtSpecificity(), PrecisionAtRecall(), \
+                                     TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()])
 
 model.summary()
 
