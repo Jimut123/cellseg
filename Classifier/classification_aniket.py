@@ -88,11 +88,11 @@ datagen = ImageDataGenerator(rotation_range=30,
                                 fill_mode="nearest")
 
 ###################
-batch_size=24
+batch_size = 40
 
 train_generator=datagen.flow_from_dataframe(
     dataframe=train,
-    directory="/content/",
+    directory="",
     x_col="file",
     y_col="label",
     seed=42,
@@ -105,7 +105,7 @@ train_generator=datagen.flow_from_dataframe(
 
 valid_generator = datagen.flow_from_dataframe(
     dataframe=validate,
-    directory="/content/",
+    directory="",
     x_col="file",
     y_col="label",
     batch_size=batch_size,
