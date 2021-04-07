@@ -194,7 +194,7 @@ opt = Adam(learning_rate=1e-5)
 
 model.compile(optimizer=opt, 
               loss='categorical_crossentropy',
-              metrics= ['accuracy', AUC(curve="ROC"), Precision(), Recall(), SensitivityAtSpecificity(), PrecisionAtRecall(), \
+              metrics= ['accuracy', AUC(curve="ROC"), Precision(), Recall(), \
                                      TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()])
 
 model.summary()
