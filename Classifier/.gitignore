@@ -3,3 +3,4 @@ PBC_dataset_normal_DIB.zip
 __MACOSX
 train
 validation
+model_checkpoint

@@ -177,12 +177,12 @@ def Classification(H,W,C):
 
     m4_1 = BatchNormalization(axis=-1)(Conv2D(256, 3, activation='relu', strides=(2, 2), name="m4_1")(l3_3))
     m4_2 = BatchNormalization(axis=-1)(Conv2D(256, 3, activation='relu', strides=(2, 2), name="m4_2")(m4_1))
-    m4_3 = BatchNormalization(axis=-1)(Conv2D(256, 3, activation='relu', strides=(2, 2), name="m4_3")(m4_2))
-    m4_4 = BatchNormalization(axis=-1)(Conv2D(256, 3, activation='relu', strides=(2, 2), name="m4_4")(m4_3))
+    m4_3 = BatchNormalization(axis=-1)(Conv2D(512, 3, activation='relu', strides=(2, 2), name="m4_3")(m4_2))
+    m4_4 = BatchNormalization(axis=-1)(Conv2D(512, 3, activation='relu', strides=(2, 2), name="m4_4")(m4_3))
 
 
-    x = SpatialDropout2D(0.15, name="dropout_3")(m4_4)
-    x = Flatten(name="flatten")(x)
+    #x = SpatialDropout2D(0.5, name="dropout_3")(m4_4)
+    x = Flatten(name="flatten")(m4_4)
     x = Dense(N_LABELS, activation='softmax', name="output_layer")(x)
 
     model = tf.keras.models.Model(inputs=input_layer, outputs=x)
