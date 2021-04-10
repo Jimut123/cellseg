@@ -4,3 +4,5 @@ __MACOSX
 train
 validation
 model_checkpoint
+classification_model_v4_blood.h5  
+#history_classification_model_v2_150e.json
