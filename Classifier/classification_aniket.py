@@ -223,13 +223,13 @@ history = model.fit(train_generator,
                     steps_per_epoch=STEP_SIZE_TRAIN,
                     validation_data=valid_generator,
                     validation_steps=STEP_SIZE_VALID,
-                    epochs=10,
+                    epochs=150,
                     class_weight=class_weights,
                     callbacks=[tensorboard_callback,callbacks],
 )
 
 
-history = Out[25] # Forgot to store it. Should not be needed for next run
+# history = Out[25] # Forgot to store it. Should not be needed for next run
 
 
 import pandas as pd
