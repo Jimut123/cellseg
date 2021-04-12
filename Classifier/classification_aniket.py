@@ -88,7 +88,7 @@ datagen = ImageDataGenerator(rotation_range=30,
                                 fill_mode="nearest")
 
 ###################
-batch_size = 40
+batch_size = 4
 
 train_generator=datagen.flow_from_dataframe(
     dataframe=train,
@@ -99,7 +99,7 @@ train_generator=datagen.flow_from_dataframe(
     shuffle=True,
     batch_size=batch_size,
     class_mode="categorical",
-    save_to_dir="./train/",
+    # save_to_dir="./train/",
     target_size=(H, W)
 )
 
@@ -112,7 +112,7 @@ valid_generator = datagen.flow_from_dataframe(
     class_mode="categorical",
     shuffle=True,
     seed=42,
-    save_to_dir="./validation/",
+    # save_to_dir="./validation/",
     target_size=(W,H)
 )
 
@@ -223,13 +223,13 @@ history = model.fit(train_generator,
                     steps_per_epoch=STEP_SIZE_TRAIN,
                     validation_data=valid_generator,
                     validation_steps=STEP_SIZE_VALID,
-                    epochs=10,
+                    epochs=150,
                     class_weight=class_weights,
                     callbacks=[tensorboard_callback,callbacks],
 )
 
 
-history = Out[25] # Forgot to store it. Should not be needed for next run
+# history = Out[25] # Forgot to store it. Should not be needed for next run
 
 
 import pandas as pd
