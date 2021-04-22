@@ -2,9 +2,12 @@ import numpy as np
 import cv2 as cv
 from matplotlib import pyplot as plt
 
-img = cv.imread('slide_1.png')
 
 
+img = cv.imread('slide_9.png')
+
+print(img.shape)
+img = cv.resize(img,(400, 300), cv.INTER_AREA)
 
 gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 
@@ -17,6 +20,8 @@ gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
 
 # plt.imshow(img)
 # plt.show()
+
+
 
 ret, thresh = cv.threshold(gray,0,255,cv.THRESH_BINARY_INV+cv.THRESH_OTSU)
 
@@ -53,8 +58,9 @@ plt.imshow(markers)
 plt.show()
 
 markers = cv.watershed(img,markers)
-img[markers == -1] = [255,0,0]
+img[markers == -1] = [0,255,0]
 
 
-plt.imshow(img)
+plt.imshow(img[:,:,::-1])
+plt.axis('off')
 plt.show()

@@ -3,20 +3,47 @@ import numpy as np
 import cv2 
 from matplotlib import pyplot as plt
 
-img = cv2.imread('slide_9.png', cv2.IMREAD_COLOR)
+# input the image
+img = cv2.imread('slide_1.png', cv2.IMREAD_COLOR)
 
 print(img.shape)
 
-
+# resize it for faster and efficient computation, we can rescale it 
+# afterwards
 img = cv2.resize(img,(667, 500), cv2.INTER_AREA)
 
-shifted = cv2.pyrMeanShiftFiltering(img, 30, 60)
+
+
+
+# norm_image = cv2.normalize(img, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+# plt.title("Normalized Image")
+# plt.imshow(norm_image)
+# plt.show()
+
+# The first option is image, then the size of the window which will 
+# have the colour value and the last is the colour scale
+
+shifted = cv2.pyrMeanShiftFiltering(img, 30, 30)
 plt.title("shifted")
 plt.imshow(shifted)
 plt.show()
 
+
+
 gray = cv2.cvtColor(shifted, cv2.COLOR_BGR2GRAY)
-thresh = cv2.threshold(gray, 0, 255,
+
+plt.title("grayscale")
+plt.imshow(gray, cmap='gray')
+plt.show()
+
+# use noise reduction via bluring
+blurred = cv2.GaussianBlur(gray, (3, 3), 0)
+
+plt.title("blurred")
+plt.imshow(blurred, cmap='gray')
+plt.show()
+
+thresh = cv2.threshold(blurred, blurred.mean(), 255,
 	cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
 plt.title("thresh")
 plt.imshow(thresh)
