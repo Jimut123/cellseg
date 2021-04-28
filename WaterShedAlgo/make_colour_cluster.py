@@ -46,12 +46,12 @@ def visualize_colors(cluster, centroids):
     return rect
 
 # Load image and convert to a list of pixels
-for item in tqdm(total_files_list):
+for item in tqdm(total_files_list[:10]):
     image = cv2.imread(total_files_list[0])
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     reshape = image.reshape((image.shape[0] * image.shape[1], 3))
     # Find and display most dominant colors
-    cluster = KMeans(n_clusters=5).fit(reshape)
+    cluster = KMeans(n_clusters=25).fit(reshape)
     visualize = visualize_colors(cluster, cluster.cluster_centers_)
     # visualize = cv2.cvtColor(visualize, cv2.COLOR_RGB2BGR)
     # plt.imshow(visualize)
@@ -59,7 +59,7 @@ for item in tqdm(total_files_list):
     # cv2.imshow('visualize', visualize)
     # cv2.waitKey()
     # print(get_top_two)
-file = open('colours_cluster.txt', 'wb')
+file = open('colours_cluster_25.txt', 'wb')
 pickle.dump(get_top_two, file)
 file.close()
 
