@@ -128,9 +128,10 @@ class_weights = {i : class_weights[i] for i in range(len(name_dict))}
 
 print("Weights: ")
 
+"""
 for cl, id in train_generator.class_indices.items():
   print(cl, class_weights[id])
-
+"""
 
 N_LABELS = len(name_dict)
 D = 1
