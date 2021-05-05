@@ -91,7 +91,7 @@ batch_size=24
 
 train_generator=datagen.flow_from_dataframe(
     dataframe=train,
-    directory="/content/",
+    directory="",
     x_col="file",
     y_col="label",
     seed=42,
@@ -104,7 +104,7 @@ train_generator=datagen.flow_from_dataframe(
 
 valid_generator = datagen.flow_from_dataframe(
     dataframe=validate,
-    directory="/content/",
+    directory="",
     x_col="file",
     y_col="label",
     batch_size=batch_size,
