@@ -87,7 +87,7 @@ datagen=ImageDataGenerator(rotation_range=360,
                             fill_mode="nearest")
 
 
-batch_size=24
+batch_size=10
 
 train_generator=datagen.flow_from_dataframe(
     dataframe=train,
