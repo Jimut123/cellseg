@@ -144,6 +144,9 @@ from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, Ma
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 from tensorflow.keras.optimizers import SGD, Adam
 from tensorflow.keras.models import Model
+from tensorflow.keras.metrics import AUC, Precision, Recall, SensitivityAtSpecificity, PrecisionAtRecall, \
+                                     TruePositives, TrueNegatives, FalsePositives, FalseNegatives
+
 
 # m1_1, m1_2, l1_1, l1_2, m2_1, m2_2, l2_1, l2_2, m3_1, m3_2, m3_1, m3_2, l3_1, l3_2, m4_1, 
 
@@ -198,8 +201,8 @@ opt = Adam(learning_rate=1e-5)
 
 model.compile(optimizer=opt, 
               loss='categorical_crossentropy',
-              metrics= ['accuracy'])
-
+              metrics= ['accuracy', AUC(curve="ROC"), Precision(), Recall(), \
+                                     TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()])
 model.summary()
 
 
