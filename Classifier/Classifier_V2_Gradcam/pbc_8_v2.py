@@ -131,7 +131,7 @@ df.columns = ['label', 'file']
 df = df.dropna()
 df.tail()
 
-
+np.random.seed(42)
 p = np.random.permutation(len(df))
 train_up_to = int(len(df) * 0.80)
 train_idx = p[:train_up_to]
