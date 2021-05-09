@@ -18,7 +18,7 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow import keras
 
 import pandas as pd
-
+import sys
 import matplotlib.pyplot as plt
 from datetime import datetime
 import pandas as pd
@@ -227,8 +227,8 @@ from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow import keras
 # batch_size = 100
 # valid_batch_size = 32
-batch_size = 2
-valid_batch_size = 2
+batch_size = 128
+valid_batch_size = 128
 train_gen = get_data_generator(df, train_idx, for_training=True, batch_size=batch_size)
 valid_gen = get_data_generator(df, valid_idx, for_training=True, batch_size=valid_batch_size)
 
@@ -251,15 +251,15 @@ history = model.fit(train_gen,
 
 import pandas as pd
 hist_df = pd.DataFrame(history.history) 
-hist_json_file = 'history_classification_model_v2_6classes_20e.json' 
+hist_json_file = 'history_pbc_8_v2_100e.json' 
 with open(hist_json_file, mode='w') as f:
     hist_df.to_json(f)
 
 # download the model in computer for later use
-model.save('classification_model_v2_model_v2_6classes_10e.h5')
+model.save('classification_pbc_8_v2_100e.h5')
 
 from tensorflow import keras
-model = keras.models.load_model('classification_model_v2_model_v2_6classes_10e.h5')
+model = keras.models.load_model('classification_pbc_8_v2_100e.h5')
 
 test_gen = get_data_generator(df, test_idx, for_training=False)
 dict(zip(model.metrics_names, model.evaluate(test_gen, steps=len(test_idx))))
@@ -289,7 +289,11 @@ for i in tqdm(test_idx):
 from sklearn.metrics import classification_report, confusion_matrix
 matrix = confusion_matrix(y_test_list, y_pred_list)
 report = classification_report(y_test_list, y_pred_list)
-print(report)
+
+with open('report_pbc_8_v2_100e.txt', 'w') as f:
+    sys.stdout = f # Change the standard output to the file we created.
+    print(report)
+    sys.stdout = original_stdout # Reset the standard output to its original value
 
 plt.imshow(matrix, cmap=plt.cm.Blues)
 plt.xlabel("Predicted labels")
@@ -298,4 +302,5 @@ plt.xticks([], [])
 plt.yticks([], [])
 plt.title('Confusion matrix ')
 plt.colorbar()
-plt.show()
+plt.savefig('confusion_matrix.png')
+plt.savefig('confusion_matrix.eps')
