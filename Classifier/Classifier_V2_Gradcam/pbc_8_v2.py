@@ -171,11 +171,14 @@ def Model_V2_Gradcam(H,W,C):
 
 model = Model_V2_Gradcam(H=360, W=360, C=3)
 
-model.compile(optimizer='adam', loss='categorical_crossentropy',
+from keras.optimizers import Adam
+opt = Adam(lr=1e-4)
+model.compile(optimizer=opt, loss='categorical_crossentropy',
             #experimental_run_tf_function=False,
             metrics = ['accuracy', AUC(curve="ROC"), Precision(), Recall(), \
             TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()]
             )
+
 model.summary()
 
 

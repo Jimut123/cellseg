@@ -1,5 +1,3 @@
-# PBC Cropped - VGG 16 
-
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 
@@ -92,6 +90,7 @@ print(rev_index)
 
 
 
+
 def parse_filepath(filepath):
     try:
         #path, filename = os.path.split(filepath)
@@ -137,17 +136,17 @@ print('train count: %s, valid count: %s, test count: %s' % (
     len(train_idx), len(valid_idx), len(test_idx)))
 
 
-from tensorflow.keras.applications.vgg16 import VGG16
+from tensorflow.keras.applications.resnet import ResNet101
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.vgg16 import preprocess_input
+from tensorflow.keras.applications.resnet import preprocess_input
 from keras.models import Model
-from keras.optimizers import Adam
+
 from keras.layers import Dense, Flatten, GlobalAveragePooling2D
 
 
-
-frozen = VGG16 (weights="imagenet", input_shape=(360,360,3), include_top=False)
+frozen = ResNet101(weights="imagenet", input_shape=(360,360,3), include_top=False)
 frozen.summary()
+
 
 trainable = frozen.output
 trainable = GlobalAveragePooling2D()(trainable)
@@ -217,6 +216,7 @@ def get_data_generator_custom(df, indices, for_training, batch_size=16):
                 yield  np.array(labels)
                 labels = []
 
+
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow import keras
 # batch_size = 100
@@ -236,7 +236,7 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 history = model.fit(train_gen,
                     steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=100,
+                    epochs=2,
                     callbacks=[tensorboard_callback,callbacks],
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
@@ -245,16 +245,15 @@ history = model.fit(train_gen,
 
 import pandas as pd
 hist_df = pd.DataFrame(history.history) 
-hist_json_file = 'history_pbc_8_vgg_16_100e.json' 
+hist_json_file = 'history_pbc_8_resnet101_100e.json' 
 with open(hist_json_file, mode='w') as f:
     hist_df.to_json(f)
 
 # download the model in computer for later use
-model.save('classification_pbc_8_vgg_16_100e.h5')
+model.save('classification_pbc_8_resnet101_100e.h5')
 
 from tensorflow import keras
-model = keras.models.load_model('classification_pbc_8_vgg_16_100e.h5')
-
+model = keras.models.load_model('classification_pbc_8_resnet101_100e.h5')
 
 
 test_gen = get_data_generator(df, test_idx, for_training=False)
@@ -272,15 +271,11 @@ for i in tqdm(test_idx):
     im = Image.open(file_)
     im = im.resize((360, 360))
     im = np.array(im) / 255.0
-    # print(im[np.newaxis, ...].shape)
     y_pred = model.predict(im[np.newaxis, ...])
     y_pred_list.append(int(tf.math.argmax(y_pred, axis=-1)))
-    #print(index[label])
     y_test_list.append(index[label])
-    # print("This = ",rev_index[int(tf.math.argmax(y_pred, axis=-1))])
-    # print(to_categorical(index[label], N_LABELS))
-    # print(label)
-    
+
+
 
 from sklearn.metrics import classification_report, confusion_matrix
 matrix = confusion_matrix(y_test_list, y_pred_list)
@@ -336,14 +331,14 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(10,10)):
     fig, ax = plt.subplots(figsize=figsize)
     sns.heatmap(cm, annot=annot, fmt='', ax=ax, cmap='rocket_r')
     #plt.savefig(filename)
-    plt.savefig('confusion_matrix_pbc_8_vgg_16_100e.png')
-    plt.savefig('confusion_matrix_pbc_8_vgg_16_100e.eps')
+    plt.savefig('confusion_matrix_pbc_8_resnet101_100e.png')
+    plt.savefig('confusion_matrix_pbc_8_resnet101_100e.eps')
     #plt.show()
 
 cm_analysis(y_test_list, y_pred_list, [i for i in rev_index] , ymap=None, figsize=(10,10))
 
 
-with open('report_pbc_8_vgg_16_100e.txt', 'w') as f:
+with open('report_pbc_8_resnet101_100e.txt', 'w') as f:
     sys.stdout = f # Change the standard output to the file we created.
     print(report)
     #sys.stdout = original_stdout # Reset the standard output to its original value
