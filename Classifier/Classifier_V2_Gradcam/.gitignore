@@ -1,2 +1,5 @@
 PBC_dataset_normal_DIB_cropped.zip
 PBC_dataset_normal_DIB_cropped
+logs  
+model_checkpoint
+classification_pbc_8_v2_100e.h5
