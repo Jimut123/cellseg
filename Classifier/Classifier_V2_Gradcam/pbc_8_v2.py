@@ -155,7 +155,6 @@ def Model_V2_Gradcam(H,W,C):
     x_3 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool3")(x_2)
     x_4 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_3)
     x_5 = tf.keras.layers.Conv2D(32, 3, activation='relu', strides=(1, 1), name="conv_32_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_4)
-
     x_6 = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool4")(x_5)
     x_7 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_1", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_6)
     x_8 = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(1, 1), name="conv_64_2", padding='same', kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x_7)
@@ -163,7 +162,7 @@ def Model_V2_Gradcam(H,W,C):
     x = tf.keras.layers.Conv2D(64, 3, activation='relu', strides=(2, 2), name="conv_64_3", kernel_initializer = 'he_normal', kernel_regularizer=l2(1e-4))(x)
     x = tf.keras.layers.MaxPooling2D((2, 2), name="max_pool6")(x)
     x = tf.keras.layers.Flatten(name="flatten")(x)
-    x = tf.keras.layers.Dropout(0.15, name="dropout_3")(x)
+    x = tf.keras.layers.Dropout(0.5, name="dropout_3")(x)
     x = tf.keras.layers.Dense(256, activation='relu', name="dense_64")(x)
     x = tf.keras.layers.Dense(N_LABELS, activation='softmax', name="output_layer")(x)
 
