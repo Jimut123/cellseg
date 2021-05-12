@@ -1,0 +1,8 @@
+PBC_dataset_normal_DIB_cropped.zip
+PBC_dataset_normal_DIB_cropped/
+classification_pbc_8_inception_v3_100e.h5
+#confusion_matrix_pbc_8_inception_v3_100e.eps
+#confusion_matrix_pbc_8_inception_v3_100e.png
+#history_pbc_8_inception_v3_100e.json
+#report_pbc_8_inception_v3_100e.txt
+
