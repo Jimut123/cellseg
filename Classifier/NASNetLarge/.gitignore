@@ -1,3 +1,6 @@
 PBC_dataset_normal_DIB_cropped
 PBC_dataset_normal_DIB_cropped.zip
+classification_pbc_8_NASNetLarge_100e.h5
+model_checkpoint
+logs
 

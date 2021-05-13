@@ -237,7 +237,7 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 history = model.fit(train_gen,
                     steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=2,
+                    epochs=100,
                     callbacks=[tensorboard_callback,callbacks],
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
@@ -272,7 +272,7 @@ for i in tqdm(test_idx):
     r = df.iloc[i]
     file_, label = r['file'], r['label']
     im = Image.open(file_)
-    im = im.resize((360, 360))
+    im = im.resize((331, 331))
     im = np.array(im) / 255.0
     # print(im[np.newaxis, ...].shape)
     y_pred = model.predict(im[np.newaxis, ...])
