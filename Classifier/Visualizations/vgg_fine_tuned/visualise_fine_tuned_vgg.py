@@ -1,4 +1,4 @@
-# PBC  full - VGG16 fine tuned 
+# PBC  full - VGG16 fine tuned Viz
 
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
@@ -44,55 +44,6 @@ import os
 
 
 
-
-
-
-
-def parse_filepath(filepath):
-    try:
-        #path, filename = os.path.split(filepath)
-        label = filepath.split('/')[1]
-        #filename, ext = os.path.splitext(filename)
-        #label, _ = filename.split("_")
-        return label
-    except Exception as e:
-        print('error to parse %s. %s' % (filepath, e))
-        return None, None
-
-DATA_DIR = 'PBC_dataset_normal_DIB'  # 302410 images. validate accuracy: 98.8%
-H, W, C = 360, 360, 3
-N_LABELS = len(index)
-D = 1
-
-files = glob.glob("{}/*/*.jpg".format(DATA_DIR))
-print("Total files = ",len(files))
-
-
-# create a pandas data frame of images, age, gender and race
-attributes = list(map(parse_filepath, files))
-
-df = pd.DataFrame(attributes)
-df['file'] = files
-df.columns = ['label', 'file']
-df = df.dropna()
-df.tail()
-
-
-
-np.random.seed(42)
-p = np.random.permutation(len(df))
-train_up_to = int(len(df) * 0.80)
-train_idx = p[:train_up_to]
-test_idx = p[train_up_to:]
-
-# split train_idx further into training and validation set
-train_up_to = int(train_up_to * 0.80)
-train_idx, valid_idx = train_idx[:train_up_to], train_idx[train_up_to:]
-
-print('train count: %s, valid count: %s, test count: %s' % (
-    len(train_idx), len(valid_idx), len(test_idx)))
-
-
 from tensorflow.keras.applications.vgg16 import VGG16
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import preprocess_input
@@ -124,14 +75,10 @@ for layer in model.layers:
 from keras.optimizers import Adam
 opt = Adam(lr=1e-4)
 model.compile(optimizer=opt, loss='categorical_crossentropy',
-            #experimental_run_tf_function=False,
+            experimental_run_tf_function=False,
             metrics = ['accuracy', AUC(curve="ROC"), Precision(), Recall(), \
             TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()]
             )
-
-
-
-
 
 
 
@@ -141,30 +88,85 @@ model = keras.models.load_model('classification_pbc_8_full_VGG16_fine_tuned_100e
 
 
 
-test_gen = get_data_generator(df, test_idx, for_training=False)
-dict(zip(model.metrics_names, model.evaluate(test_gen, steps=len(test_idx))))
+layer_names = []
+filter_depth = []
+for layer in model.layers:
+  if 'conv' not in layer.name:
+    continue
+  filters, biases = layer.get_weights()
+  print(layer.name, filters.shape)
+  layer_names.append(layer.name)
+  filter_depth.append(filters.shape[3])
 
-from tensorflow.keras.utils import to_categorical
-from PIL import Image
-from tqdm import tqdm
-y_pred_list = []
-y_test_list = []
+# https://www.kaggle.com/anktplwl91/visualizing-what-your-convnet-learns
 
-for i in tqdm(test_idx):
-    r = df.iloc[i]
-    file_, label = r['file'], r['label']
-    im = Image.open(file_)
-    im = im.resize((360, 360))
-    im = np.array(im) / 255.0
-    # print(im[np.newaxis, ...].shape)
-    y_pred = model.predict(im[np.newaxis, ...])
-    y_pred_list.append(int(tf.math.argmax(y_pred, axis=-1)))
-    #print(index[label])
-    y_test_list.append(index[label])
-    # print("This = ",rev_index[int(tf.math.argmax(y_pred, axis=-1))])
-    # print(to_categorical(index[label], N_LABELS))
-    # print(label)
+# The purpose of this function is to just convert a numpy array to a standard image format, so that it can be displayed and viewed comfortably
+def deprocess_image(x):
     
+    x -= x.mean()
+    x /= (x.std() + 1e-5)
+    x *= 0.1
+    x += 0.5
+    x = np.clip(x, 0, 1)
+    x *= 255
+    x = np.clip(x, 0, 255).astype('uint8')
+
+    return x
+
+# This function is used to create a loss function that maximizes the value of a given filter in a convolution layer, and then we use SGD to adjust the values of the
+# input image so as to maximize this activation value. We pass the layer name and the filter index to the function as arguments. 'loss' is the mean for that particular
+# filter, 'grads' is the gradient calculated for this loss with respect to input image. Finally, SGD is run for 80 iterations which continuously maximizes the response
+# to input image by adding the gradient. Finally, it uses 'deprocess_image' to convert this array to a representable image format.
+
+def generate_pattern(layer_name, filter_index, size=150):
+    
+    layer_output = model.get_layer(layer_name).output
+    loss = K.mean(layer_output[:, :, :, filter_index])
+    grads = K.gradients(loss, model.input)[0]
+    grads /= (K.sqrt(K.mean(K.square(grads))) + 1e-5)
+    iterate = K.function([model.input], [loss, grads])
+    input_img_data = np.random.random((1, size, size, 3)) * 20 + 128.
+    step = 1.
+    for i in range(80):
+        loss_value, grads_value = iterate([input_img_data])
+        input_img_data += grads_value * step
+        
+    img = input_img_data[0]
+    return deprocess_image(img)
+
+
+import os
+import numpy as np # linear algebra
+import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
+import cv2
+from tqdm import tqdm
+import matplotlib.pyplot as plt
+import keras.backend as K
+from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing import image
+from keras.models import Model
+from keras.layers import Input, Dense, Dropout
+from keras.applications.inception_v3 import InceptionV3
+from keras.applications.inception_v3 import preprocess_input, decode_predictions
+
+%matplotlib inline
+
+from tensorflow.python.framework.ops import disable_eager_execution
+disable_eager_execution()
+
+# Below are the patterns to which the filters from first convolution layer get activated. As we can see these are very basic cross-sectional patterns formed by
+# horizontal and vertical lines, which is what the these filters look in the input image and get activated if they find one.
+
+for ln, fd in zip(layer_names,filter_depth):
+  size = int(fd/16)
+  fig = plt.figure(figsize=(16, size))
+  for img in tqdm(range(fd)):
+      ax = fig.add_subplot(size, 16, img+1)
+      ax = plt.imshow(generate_pattern(ln, img))
+      plt.xticks([])
+      plt.yticks([])
+      fig.subplots_adjust(wspace=0.05, hspace=0.05)
+  plt.savefig(str(ln+".png"),bbox_inches='tight',pad_inches=0)
 
 
 
