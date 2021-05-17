@@ -1,4 +1,4 @@
-# PBC full - InceptionResNetV2 
+# PBC Cropped - InceptionResNetV2 fine tuned
 
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
@@ -45,7 +45,7 @@ import os
 
 
 
-dir = glob.glob('PBC_dataset_normal_DIB/*')
+dir = glob.glob('PBC_dataset_normal_DIB_cropped/*')
 get_freq = {}
 # count = 1
 for item in dir:
@@ -103,7 +103,7 @@ def parse_filepath(filepath):
         print('error to parse %s. %s' % (filepath, e))
         return None, None
 
-DATA_DIR = 'PBC_dataset_normal_DIB'  # 302410 images. validate accuracy: 98.8%
+DATA_DIR = 'PBC_dataset_normal_DIB_cropped'  # 302410 images. validate accuracy: 98.8%
 H, W, C = 360, 360, 3
 N_LABELS = len(index)
 D = 1
@@ -160,9 +160,9 @@ trainable = Dense(N_LABELS, activation="softmax")(trainable)
 model = Model(inputs=frozen.input, outputs=trainable)
 model.summary()
 
-model.layers
-for layer in model.layers[:-4]:
-    layer.trainable = False
+# model.layers
+# for layer in model.layers[:-4]:
+#     layer.trainable = False
 for layer in model.layers:
     print(layer, layer.trainable)
 
@@ -238,7 +238,7 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 history = model.fit(train_gen,
                     steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=100,
+                    epochs=1,
                     callbacks=[tensorboard_callback,callbacks],
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
@@ -248,15 +248,15 @@ history = model.fit(train_gen,
 
 import pandas as pd
 hist_df = pd.DataFrame(history.history) 
-hist_json_file = 'history_pbc_8_full_InceptionResNetV2_100e.json' 
+hist_json_file = 'history_pbc_8_cropped_InceptionResNetV2_fine_tuned_100e.json' 
 with open(hist_json_file, mode='w') as f:
     hist_df.to_json(f)
 
 # download the model in computer for later use
-model.save('classification_pbc_8_full_InceptionResNetV2_100e.h5')
+model.save('classification_pbc_8_cropped_InceptionResNetV2_fine_tuned_100e.h5')
 
 from tensorflow import keras
-model = keras.models.load_model('classification_pbc_8_full_InceptionResNetV2_100e.h5')
+model = keras.models.load_model('classification_pbc_8_cropped_InceptionResNetV2_fine_tuned_100e.h5')
 
 
 
@@ -339,14 +339,14 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(10,10)):
     fig, ax = plt.subplots(figsize=figsize)
     sns.heatmap(cm, annot=annot, fmt='', ax=ax, cmap='rocket_r')
     #plt.savefig(filename)
-    plt.savefig('confusion_matrix_pbc_8_full_InceptionResNetV2_100e.png')
-    plt.savefig('confusion_matrix_pbc_8_full_InceptionResNetV2_100e.eps')
+    plt.savefig('confusion_matrix_pbc_8_cropped_InceptionResNetV2_fine_tuned_100e.png')
+    plt.savefig('confusion_matrix_pbc_8_cropped_InceptionResNetV2_fine_tuned_100e.eps')
     #plt.show()
 
 cm_analysis(y_test_list, y_pred_list, [i for i in rev_index] , ymap=None, figsize=(10,10))
 
 
-with open('report_pbc_8_full_InceptionResNetV2.txt', 'w') as f:
+with open('report_pbc_8_cropped_InceptionResNetV2_fine_tuned_100e.txt', 'w') as f:
     sys.stdout = f # Change the standard output to the file we created.
     print(report)
     #sys.stdout = original_stdout # Reset the standard output to its original value
