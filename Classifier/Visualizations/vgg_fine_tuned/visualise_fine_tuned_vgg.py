@@ -55,7 +55,7 @@ from keras.layers import Dense, Flatten, GlobalAveragePooling2D
 
 frozen = VGG16 (weights="imagenet", input_shape=(360,360,3), include_top=False)
 frozen.summary()
-
+N_LABELS = 8
 trainable = frozen.output
 trainable = GlobalAveragePooling2D()(trainable)
 #print(trainable.shape)
@@ -84,7 +84,7 @@ model.compile(optimizer=opt, loss='categorical_crossentropy',
 
 
 from tensorflow import keras
-model = keras.models.load_model('classification_pbc_8_full_VGG16_fine_tuned_100e.h5')
+model = keras.models.load_model('classification_pbc_8_vgg_16_100e.h5')
 
 
 
@@ -149,7 +149,7 @@ from keras.layers import Input, Dense, Dropout
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.inception_v3 import preprocess_input, decode_predictions
 
-%matplotlib inline
+#%matplotlib inline
 
 from tensorflow.python.framework.ops import disable_eager_execution
 disable_eager_execution()
