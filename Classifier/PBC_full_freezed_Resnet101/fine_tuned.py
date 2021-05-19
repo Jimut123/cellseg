@@ -121,9 +121,11 @@ df['file'] = files
 df.columns = ['label', 'file']
 df = df.dropna()
 df.tail()
-model.layers
-for layer in model.layers[:-4]:
-    layer.trainable = False
+
+
+#model.layers
+#for layer in model.layers[:-4]:
+#    layer.trainable = False
 
 
 np.random.seed(42)
