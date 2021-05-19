@@ -123,10 +123,6 @@ df = df.dropna()
 df.tail()
 
 
-#model.layers
-#for layer in model.layers[:-4]:
-#    layer.trainable = False
-
 
 np.random.seed(42)
 p = np.random.permutation(len(df))
