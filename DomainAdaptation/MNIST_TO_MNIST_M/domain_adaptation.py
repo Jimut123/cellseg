@@ -31,6 +31,8 @@ from skimage.transform import resize
 from sklearn.model_selection import train_test_split
 
 (x_source_train, y_source_train), (x_source_test, y_source_test) = mnist.load_data()
+(mnist_train_x, mnist_train_y), (mnist_test_x, mnist_test_y) = tf.keras.datasets.mnist.load_data()
+
 
 def process_mnist(x):
     x = np.moveaxis(x, 0, -1)
