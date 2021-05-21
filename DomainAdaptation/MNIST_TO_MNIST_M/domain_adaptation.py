@@ -87,7 +87,10 @@ mnist_m_train_y, mnist_m_test_y = mnist_train_y, mnist_test_y
 
 x_target_train.shape, x_target_test.shape
 
-
+from tensorflow.keras.layers import MaxPool2D, Conv2D, Dense, Dropout, Flatten, Input
+from tensorflow.keras.models import Model
+from tensorflow.keras.optimizers import SGD
+import tensorflow as tf
 
 @tf.custom_gradient
 def grad_reverse(x):
