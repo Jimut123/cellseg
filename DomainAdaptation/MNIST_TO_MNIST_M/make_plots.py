@@ -9,7 +9,9 @@ import skimage.io
 import urllib.request
 import tensorflow as tf
 import h5py
-
+import json
+import matplotlib.pyplot as plt
+#import system as sys
 # to use the full dataset
 USE_SUBSET = False
 
@@ -283,11 +285,12 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(10,10)):
 
 cm_analysis(mnist_actual_list, mnist_pred_list, [i for i in range(10)] , ymap=None, figsize=(10,10))
 
-
+"""
 with open('report_mnist_da_100e.txt', 'w') as f:
     sys.stdout = f # Change the standard output to the file we created.
     print(report)
     #sys.stdout = original_stdout # Reset the standard output to its original value
+"""
 
 from tqdm import tqdm
 
@@ -360,11 +363,13 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(10,10)):
 cm_analysis(mnist_m_actual_list, mnist_m_pred_list, [i for i in range(10)] , ymap=None, figsize=(10,10))
 
 
+
+"""
 with open('report_mnist_da_100e.txt', 'w') as f:
     sys.stdout = f # Change the standard output to the file we created.
     print(report)
     #sys.stdout = original_stdout # Reset the standard output to its original value
-
+"""
 
 
 import math
@@ -393,7 +398,7 @@ plt.savefig('prediction_DA_MNIST_M.eps')
 
 
 
-%matplotlib inline
+#%matplotlib inline
 import os
 import matplotlib
 import matplotlib.pyplot as plt
