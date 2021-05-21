@@ -1,4 +1,14 @@
 import numpy as np
+# creating MNIST-M dataset
+import tarfile
+import os
+import cv2
+import numpy as np
+import skimage
+import skimage.io
+import urllib.request
+import tensorflow as tf
+import h5py
 
 # to use the full dataset
 USE_SUBSET = False
