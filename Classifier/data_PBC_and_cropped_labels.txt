@@ -1,0 +1,9 @@
+{0: 'eosinophil',
+ 1: 'neutrophil',
+ 2: 'monocyte',
+ 3: 'ig',
+ 4: 'basophil',
+ 5: 'erythroblast',
+ 6: 'platelet',
+ 7: 'lymphocyte'}
+
