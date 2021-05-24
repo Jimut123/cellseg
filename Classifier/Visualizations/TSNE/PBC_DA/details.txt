@@ -1,0 +1,5 @@
+n_components PCA = 200
+TSNE perplexity = 50
+train count: 8346, valid count: 2087, 
+test count: 2609
+
