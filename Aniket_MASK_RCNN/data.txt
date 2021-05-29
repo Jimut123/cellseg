@@ -1,0 +1,68 @@
+[
+  {
+    "name": "bg",
+    "id": 1,
+    "color": "#c080c0",
+    "attributes": []
+  },
+  {
+    "name": "band cell",
+    "id": 2,
+    "color": "#33ddff",
+    "attributes": []
+  },
+  {
+    "name": "basophil",
+    "id": 3,
+    "color": "#fa3253",
+    "attributes": []
+  },
+  {
+    "name": "blast cell",
+    "id": 4,
+    "color": "#34d1b7",
+    "attributes": []
+  },
+  {
+    "name": "eosinophil",
+    "id": 5,
+    "color": "#ff007c",
+    "attributes": []
+  },
+  {
+    "name": "lymphocyte",
+    "id": 6,
+    "color": "#ff6037",
+    "attributes": []
+  },
+  {
+    "name": "monocyte",
+    "id": 7,
+    "color": "#ddff33",
+    "attributes": []
+  },
+  {
+    "name": "neutrophil",
+    "id": 8,
+    "color": "#b83df5",
+    "attributes": []
+  },
+  {
+    "name": "promyelocyte",
+    "id": 9,
+    "color": "#ffcc33",
+    "attributes": []
+  },
+  {
+    "name": "myelocyte",
+    "id": 10,
+    "color": "#24b353",
+    "attributes": []
+  },
+  {
+    "name": "metamyelocyte",
+    "id": 11,
+    "color": "#034257",
+    "attributes": []
+  }
+]
