@@ -265,7 +265,7 @@ dataset.prepare()
 inference_config = BloodInferenceConfig()
 model = modellib.MaskRCNN(mode="inference", config=inference_config,
                                   model_dir=MODEL_DIR)
-weights_path = "mask_rcnn_blood__epoch_2.h5"
+weights_path = "mask_rcnn_blood_final_model.h5"
 model.load_weights(weights_path, by_name=True)
 
 directory = sys.argv[1]
