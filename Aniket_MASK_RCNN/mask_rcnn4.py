@@ -9,7 +9,11 @@ Original file is located at
 
 
 # Commented out IPython magic to ensure Python compatibility
-# Commented out IPython magic to ensure Python compatibility.
+
+import warnings
+warnings.filterwarnings("ignore")
+
+
 import os
 import sys
 import random
@@ -23,13 +27,16 @@ from imgaug import augmenters as iaa
 import pandas as pd
 
 import tensorflow.compat.v1 as tf
+# import tensorflow as tf
+
 import keras
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True
 sess = tf.Session(config=config)
-# import tensorflow as tf
+
 tf.disable_v2_behavior()
 
+device = '/gpu:0'
 
 # %tensorflow_version 1.x
 # Root directory of the project
@@ -69,8 +76,8 @@ class BloodConfig(Config):
     NUM_CLASSES = 1 + 10  # Background + basophil et al
 
     # Number of training and validation steps per epoch
-    STEPS_PER_EPOCH = 50
-    VALIDATION_STEPS = 10
+    STEPS_PER_EPOCH = 500
+    VALIDATION_STEPS = 40
 
     # Don't exclude based on confidence. Since we have two classes
     # then 0.5 is the minimum anyway as it picks between basophil and BG
@@ -229,7 +236,10 @@ class BloodDataset(utils.Dataset):
         for i, p in enumerate(info["polygons"]):
             # Get indexes of pixels inside the polygon and set them to 1
             rr, cc = skimage.draw.polygon(p['all_points_y'], p['all_points_x'])
-            mask[rr, cc, i] = 1
+            try:
+                mask[rr, cc, i] = 1
+            except IndexError:
+                mask[rr-1,cc-1,i] = 1
         
         # Return mask, and array of class IDs of each instance. Since we have
         # one class ID, we return an array of ones
@@ -279,7 +289,7 @@ def train(model, dataset_dir):
     ]
     history_network_heads = model.train(dataset_train, dataset_val,
                                 learning_rate=config.LEARNING_RATE,
-                                epochs=10,
+                                epochs=200,
                                 augmentation=augmentation,
                                 custom_callbacks=callbacks,
                                 layers='heads')
@@ -290,14 +300,9 @@ def train(model, dataset_dir):
         hist_df_nh.to_json(f)
 
     print("Train all layers")
-    model.train(dataset_train, dataset_val,
-                learning_rate=config.LEARNING_RATE,
-                epochs=10,
-                augmentation=augmentation,
-                layers='all')
     history_dataset_train = model.train(dataset_train, dataset_val,
                                 learning_rate=config.LEARNING_RATE,
-                                epochs=150,
+                                epochs=200,
                                 augmentation=augmentation,
                                 layers='all')
     
@@ -315,6 +320,7 @@ model = modellib.MaskRCNN(mode="training", config=config,
 weights_path = model.get_imagenet_weights()
 model.load_weights(weights_path, by_name=True)
 
+# with tf.device(device):
 train(model, "./dataset")
 
 def get_ax(rows=1, cols=1, size=8):
@@ -341,7 +347,6 @@ weights_path = model.find_last()
 model.load_weights(weights_path, by_name=True)
 
 for image_id in dataset.image_ids:
-
     image_id = random.choice(dataset.image_ids)
 
     original_image, image_meta, gt_class_id, gt_bbox, gt_mask =\
@@ -373,12 +378,14 @@ for image_id in dataset.image_ids:
                             dataset.class_names, r['scores'], ax=get_ax(), title=label)
     plt.savefig("test_mask_{}".format(dataset.image_reference(image_id).replace("/", "_")))
     AP, precisions, recalls, overlaps = utils.compute_ap(gt_bbox, gt_class_id, gt_mask,
-                                          r['rois'], r['class_ids'], r['scores'], r['masks'])
+                                            r['rois'], r['class_ids'], r['scores'], r['masks'])
     visualize.plot_precision_recall(AP, precisions, recalls)
     plt.savefig("test_precision_recall_{}".format(dataset.image_reference(image_id).replace("/", "_")))
     visualize.plot_overlaps(gt_class_id, r['class_ids'], r['scores'],
                         overlaps, dataset.class_names)
     plt.savefig("test_overlaps_{}".format(dataset.image_reference(image_id).replace("/", "_")))
+
+
 def compute_batch_ap(image_ids):
     APs = []
     for image_id in image_ids:
