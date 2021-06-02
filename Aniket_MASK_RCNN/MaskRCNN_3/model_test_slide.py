@@ -309,7 +309,7 @@ inference_config = BloodInferenceConfig()
 model = modellib.MaskRCNN(mode="inference", config=inference_config,
                                   model_dir=MODEL_DIR)
 # weights_path = model.find_last()
-model.load_weights("Mask_RCNN/logs/blood20210318T1812/mask_rcnn_blood_*epoch*.h5", by_name=True)
+model.load_weights("Mask_RCNN/logs/blood20210530T1700/mask_rcnn_blood_*epoch*.h5", by_name=True)
 
 def searchKeysByVal(dict, byVal):
     keysList = []
