@@ -1,0 +1,3 @@
+logs
+model_checkpoint
+classification_Smear_10_cropped_inception_v3_fine_tuned_100e.h5
