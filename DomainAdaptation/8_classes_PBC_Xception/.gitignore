@@ -2,3 +2,4 @@ PBC_8_DA
 classification_pbc_8_DA_cropped_xception_fine_tuned_100e.h5
 model_checkpoint
 logs
+classification_data
