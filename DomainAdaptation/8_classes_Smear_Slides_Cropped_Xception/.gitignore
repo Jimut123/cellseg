@@ -1,1 +1,6 @@
 classification_data
+classification_Smear_Slides_DA_cropped_xception_fine_tuned_100e.h5
+logs/
+model_checkpoint/
+
+
