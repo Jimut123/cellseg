@@ -1,4 +1,4 @@
-# PBC cropped - Xception fine tuned 8 classes for DA
+# Smear Slides cropped - Xception fine tuned 8 classes for DA
 
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
@@ -16,7 +16,7 @@ import os
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 
-import tensorflow as tf
+import tensorflow as tfpbc_8pbc_8
 from keras.regularizers import l2
 from tensorflow.keras import datasets, layers, models
 from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D,\
@@ -44,7 +44,7 @@ import os
 
 
 
-dir = glob.glob('PBC_8_DA/*')
+dir = glob.glob('classification_data/*')
 get_freq = {}
 # count = 1
 for item in dir:
@@ -102,7 +102,7 @@ def parse_filepath(filepath):
         print('error to parse %s. %s' % (filepath, e))
         return None, None
 
-DATA_DIR = 'PBC_8_DA'  # 302410 images. validate accuracy: 98.8%
+DATA_DIR = 'classification_data'  # 302410 images. validate accuracy: 98.8%
 H, W, C = 360, 360, 3
 N_LABELS = len(index)
 D = 1
@@ -237,7 +237,7 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 history = model.fit(train_gen,
                     steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=100,
+                    epochs=1,
                     callbacks=[tensorboard_callback,callbacks],
                     validation_data=valid_gen,
                     validation_steps=len(valid_idx)//valid_batch_size)
@@ -246,15 +246,15 @@ history = model.fit(train_gen,
 
 import pandas as pd
 hist_df = pd.DataFrame(history.history) 
-hist_json_file = 'history_pbc_8_DA_cropped_xception_fine_tuned_100e.json' 
+hist_json_file = 'history_Smear_Slides_DA_cropped_xception_fine_tuned_100e.json' 
 with open(hist_json_file, mode='w') as f:
     hist_df.to_json(f)
 
 # download the model in computer for later use
-model.save('classification_pbc_8_DA_cropped_xception_fine_tuned_100e.h5')
+model.save('classification_Smear_Slides_DA_cropped_xception_fine_tuned_100e.h5')
 
 from tensorflow import keras
-model = keras.models.load_model('classification_pbc_8_DA_cropped_xception_fine_tuned_100e.h5')
+model = keras.models.load_model('classification_Smear_Slides_DA_cropped_xception_fine_tuned_100e.h5')
 
 
 
@@ -337,14 +337,14 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(10,10)):
     fig, ax = plt.subplots(figsize=figsize)
     sns.heatmap(cm, annot=annot, fmt='', ax=ax, cmap='rocket_r')
     #plt.savefig(filename)
-    plt.savefig('confusion_matrix_pbc_8_DA_cropped_xception_fine_tuned_100e.png')
-    plt.savefig('confusion_matrix_pbc_8_DA_cropped_xception_fine_tuned_100e.eps')
+    plt.savefig('confusion_matrix_Smear_Slides_DA_cropped_xception_fine_tuned_100e.png')
+    plt.savefig('confusion_matrix_Smear_Slides_DA_cropped_xception_fine_tuned_100e.eps')
     #plt.show()
 
 cm_analysis(y_test_list, y_pred_list, [i for i in rev_index] , ymap=rev_index, figsize=(10,10))
 
 
-with open('report_pbc_8_DA_cropped_xception_fine_tuned_100e.txt', 'w') as f:
+with open('report_Smear_Slides_DA_cropped_xception_fine_tuned_100e.txt', 'w') as f:
     sys.stdout = f # Change the standard output to the file we created.
     print(report)
     #sys.stdout = original_stdout # Reset the standard output to its original value
