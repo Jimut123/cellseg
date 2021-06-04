@@ -2,6 +2,7 @@
 mask_rcnn_blood_final_model.h5
 dataset.tar.gz
 data_test_smear
+data_test_smear_mixed
 # Mask_RCNN/
 dataset
 Mask_RCNN/assets
