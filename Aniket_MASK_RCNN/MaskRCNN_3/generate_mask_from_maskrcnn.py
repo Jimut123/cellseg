@@ -82,16 +82,18 @@ for data in all_json_annotations['data']:
         # plt.imshow(act_mask)
         # plt.show()
 
-        green_mask = get_image.copy()
+        colour_mask = np.zeros(get_image.shape) #get_image.copy()
         col = vibrant_colors[random.randint(0,5)]
 
-        green_mask[(act_mask==255).all(-1)] = col
+        colour_mask[(act_mask==255).all(-1)] = col
         
-        print("green mask shape = ",green_mask.shape)
+        print("green mask shape = ",colour_mask.shape)
         # plt.imshow(green_mask[:,:,::-1])
         # plt.show()
 
-        get_all_masks.append(green_mask)
+        get_all_masks.append(colour_mask)
+        # plt.imshow(colour_mask)
+        # plt.show()
         get_bbox_coords.append([x1,y1,w,h,label,col])
     
     # plt.imshow(img[:,:,0])
@@ -104,7 +106,7 @@ for data in all_json_annotations['data']:
     print(float(1/(len(get_all_masks)+1)))
     print("Max and Min of get_image = ",get_image.max(),get_image.min())
     final_masked_im = np.zeros(get_image.shape)
-    final_masked_im = float(1/(len(get_all_masks)+1))*get_image
+    # final_masked_im = float(1/(len(get_all_masks)+1))*get_image
     #print("giu",np.unique(get_image)[:50])
     #print("fmiu",np.unique(final_masked_im)[:50])
     # print("Max and Min of final_masked_im = ",final_masked_im.max(),final_masked_im.min())
@@ -118,12 +120,17 @@ for data in all_json_annotations['data']:
         # plt.imshow(image)
         # plt.show()
         print("max = ",image.max(),"min = ",image.min())
-        final_masked_im = final_masked_im + float(1/(len(get_all_masks)+1))*image
+        final_masked_im = final_masked_im + image
         print("Final max = ",final_masked_im.max(),"min = ",final_masked_im.min())
-        # plt.imshow(final_masked_im[:,:,::-1])
+        # plt.imshow(final_masked_im[:,:,::-1].astype('uint8'))
         # plt.show()
     print("fin = ",final_masked_im.max())
-
+    np.clip(final_masked_im, 0, 255, out=final_masked_im)
+    # plt.imshow(final_masked_im.astype("uint8"))
+    # plt.show()
+    # plt.imshow(image)
+    # plt.show()
+    final_masked_im = 0.4*final_masked_im +0.6*get_image
     for items in get_bbox_coords:
         x,y,w,h,name, col = int(items[0]), int(items[1]), int(items[2]), int(items[3]), items[4], items[5]
         cropped_img = np.zeros((w,h,3))
@@ -137,8 +144,11 @@ for data in all_json_annotations['data']:
         # img, text, coord, type of font, size, col, thickness
         cv2.putText(final_masked_im, str(name), (x, y), 0, 3, [0,0,0], 10)
     save_im_name = valid_image_name.split('.')[0]+"_mask_rcnn.jpg"
+    max_fi =  final_masked_im.max()
+    ratio = float(255/max_fi)
+    print("ratio = ",ratio)
     cv2.imwrite(save_im_name,final_masked_im[:,:,::-1])
-    # plt.imshow(final_masked_im)
+    # plt.imshow((final_masked_im*ratio).astype('uint8'))
     # plt.show()
     # mask_gt_save_name = get_im_path.split('.')[0]+"_gt.jpg"
     # cv2.imwrite(mask_gt_save_name,final_masked_im)
