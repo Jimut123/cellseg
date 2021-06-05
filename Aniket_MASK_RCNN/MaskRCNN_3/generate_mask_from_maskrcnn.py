@@ -130,7 +130,8 @@ for data in all_json_annotations['data']:
     # plt.show()
     # plt.imshow(image)
     # plt.show()
-    final_masked_im = 0.4*final_masked_im +0.6*get_image
+    # final_masked_im = 0.4*final_masked_im +0.6*get_image
+    final_masked_im = 0.4*final_masked_im +0.9*get_image
     for items in get_bbox_coords:
         x,y,w,h,name, col = int(items[0]), int(items[1]), int(items[2]), int(items[3]), items[4], items[5]
         cropped_img = np.zeros((w,h,3))
