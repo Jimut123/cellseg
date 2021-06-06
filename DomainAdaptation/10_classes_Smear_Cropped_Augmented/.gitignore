@@ -1,0 +1,4 @@
+classification_data_10_aug
+model_checkpoint
+logs
+classification_Smear_Slides_DA_cropped_aug_8_xception_fine_tuned_100e.h5
