@@ -350,5 +350,3 @@ with open('report_Smear_Slides_DA_cropped_aug_8_xception_fine_tuned_100e.txt', '
     print(report)
     #sys.stdout = original_stdout # Reset the standard output to its original value
 
-
-

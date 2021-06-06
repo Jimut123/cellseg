@@ -16,20 +16,84 @@ from PIL import Image, ImageDraw
 ######## LOAD MODEL AND STUFFS ############################################
 ###########################################################################
 
+from tensorflow.keras.utils import to_categorical
+from PIL import Image
+
+import sys
+from tensorflow.keras.utils import to_categorical
+from PIL import Image
+
+import tensorflow as tfpbc_8pbc_8
+from keras.regularizers import l2
+from tensorflow.keras import datasets, layers, models
+from tensorflow.keras.layers import Input, Dense, BatchNormalization, Conv2D, MaxPool2D,\
+                                    GlobalMaxPool2D, Dropout, SpatialDropout2D, add, concatenate
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from tensorflow.keras.optimizers import SGD
+from tensorflow.keras.models import Model
+from tensorflow.keras.metrics import AUC, Precision, Recall, SensitivityAtSpecificity, PrecisionAtRecall, \
+                                     TruePositives, TrueNegatives, FalsePositives, FalseNegatives
 
 
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow import keras
+
+import matplotlib.pyplot as plt
+from datetime import datetime
+import pandas as pd
+import numpy as np
+import glob
+import time
+import cv2
+import os
 
 
+rev_index = {0: 'lymphocyte', 1: 'monocyte', 2: 'myelocyte', 3: 'neutrophil', 4: 'blast', 5: 'promyelocyte', 6: 'metamyelocyte', 7: 'band', 8: 'basophil', 9: 'eosinophil'}
+index = {'lymphocyte': 0, 'monocyte': 1, 'myelocyte': 2, 'neutrophil': 3, 'blast': 4, 'promyelocyte': 5, 'metamyelocyte': 6, 'band': 7, 'basophil': 8, 'eosinophil': 9}
 
+H, W, C = 360, 360, 3
+N_LABELS = len(index)
+D = 1
 
+import tensorflow as tf
+from tensorflow.keras.applications import Xception
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.vgg16 import preprocess_input
+from keras.models import Model
+from keras.optimizers import Adam
+from keras.layers import Dense, Flatten, GlobalAveragePooling2D
 
+frozen = Xception(weights="imagenet", input_shape=(360,360,3), include_top=False)
+frozen.summary()
 
+trainable = frozen.output
+trainable = GlobalAveragePooling2D()(trainable)
+#print(trainable.shape)
+trainable = Dense(128, activation="relu")(trainable)
+trainable = Dense(32, activation="relu")(trainable)
+trainable = Dense(N_LABELS, activation="softmax")(trainable)
+model = Model(inputs=frozen.input, outputs=trainable)
+model.summary()
 
+# model.layers
+# for layer in model.layers[:-4]:
+#     layer.trainable = False
+for layer in model.layers:
+    print(layer, layer.trainable)
 
+from keras.optimizers import Adam
+opt = Adam(lr=1e-4)
+model.compile(optimizer=opt, loss='categorical_crossentropy',
+            #experimental_run_tf_function=False,
+            metrics = ['accuracy', AUC(curve="ROC"), Precision(), Recall(), \
+            TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()]
+            )
 
+from tensorflow.keras.utils import to_categorical
+from PIL import Image
 
-
-
+from tensorflow import keras
+model = keras.models.load_model('classification_Smear_Slides_DA_cropped_aug_8_xception_fine_tuned_100e.h5')
 
 ###########################################################################
 
@@ -62,6 +126,8 @@ for data in all_json_annotations['data']:
     get_bbox_coords = [] # x, y, w, h, label, col
     get_all_masks = []
 
+    masks_act = []
+
     for item in all_json_annotations['data'][data]['masks']:
 
         # print(item)
@@ -89,8 +155,8 @@ for data in all_json_annotations['data']:
         # print(vertices_list)
         maskIm = Image.new('L', (imArray.shape[1], imArray.shape[0]), 0)
         ImageDraw.Draw(maskIm).polygon(vert_list_m, outline=1, fill=1)
-
         maskIm = np.array(maskIm) * 255
+
         # plt.imshow(maskIm)
         # plt.show()
         print(maskIm.max())
@@ -99,6 +165,9 @@ for data in all_json_annotations['data']:
         act_mask[:,:,0] = maskIm
         act_mask[:,:,1] = maskIm
         act_mask[:,:,2] = maskIm
+        # plt.imshow(act_mask)
+        # plt.show()
+        masks_act.append(act_mask)
         print("--"*40,get_image.shape,", ",act_mask.shape)
         
         # plt.imshow(act_mask)
@@ -154,11 +223,17 @@ for data in all_json_annotations['data']:
     # plt.show()
     # final_masked_im = 0.4*final_masked_im +0.6*get_image
     final_masked_im = 0.4*final_masked_im +0.9*get_image
-    for items in get_bbox_coords:
+    for items,msks in zip(get_bbox_coords,masks_act):
         x,y,w,h,name, col = int(items[0]), int(items[1]), int(items[2]), int(items[3]), items[4], items[5]
         cropped_img = np.zeros((w,h,3))
-        cropped_img = img[y:y+h,x:x+w]
+        cropped_img = get_image[y:y+h,x:x+w] # * msks[y:y+h,x:x+w]
         # make DA preds here in the cropped image
+        cropped_img = cv2.resize(cropped_img, (360,360))
+        print("Shape = ",cropped_img.shape)
+        y_pred = model.predict(cropped_img[np.newaxis, ...]/255.0)
+        print("softmax = ",y_pred)
+        prd_from_model = rev_index[int(tf.math.argmax(y_pred, axis=-1))]
+        print("Prediction = ",prd_from_model)
         # plt.imshow(cropped_img[:,:,::-1])
         # plt.show()
         print(x,y,w,h,name)
@@ -166,11 +241,13 @@ for data in all_json_annotations['data']:
         cv2.rectangle(final_masked_im, (x,y), (x+w,y+h), col,15)
         # img, text, coord, type of font, size, col, thickness
         cv2.putText(final_masked_im, str(name), (x, y), 0, 3, [0,0,0], 10)
+        cv2.putText(final_masked_im, str(prd_from_model), (x, y+h), 0, 3, [0,0,255], 10)
     save_im_name = valid_image_name.split('.')[0]+"_mask_rcnn.jpg"
+    save_im_predname = valid_image_name.split('.')[0]+"_model_pred.jpg"
     max_fi =  final_masked_im.max()
     ratio = float(255/max_fi)
     print("ratio = ",ratio)
-    cv2.imwrite(save_im_name,final_masked_im[:,:,::-1])
+    cv2.imwrite(save_im_predname,final_masked_im[:,:,::-1])
     # plt.imshow((final_masked_im*ratio).astype('uint8'))
     # plt.show()
     # mask_gt_save_name = get_im_path.split('.')[0]+"_gt.jpg"
