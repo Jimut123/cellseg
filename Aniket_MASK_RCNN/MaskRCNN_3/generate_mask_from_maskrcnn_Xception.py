@@ -226,7 +226,11 @@ for data in all_json_annotations['data']:
     for items,msks in zip(get_bbox_coords,masks_act):
         x,y,w,h,name, col = int(items[0]), int(items[1]), int(items[2]), int(items[3]), items[4], items[5]
         cropped_img = np.zeros((w,h,3))
-        cropped_img = get_image[y:y+h,x:x+w] # * msks[y:y+h,x:x+w]
+        plt.imshow(msks[y:y+h,x:x+w])
+        plt.show()
+        cropped_img = get_image[y:y+h,x:x+w] #cv2.bitwise_and(get_image[y:y+h,x:x+w],get_image[y:y+h,x:x+w],mask = msks[y:y+h,x:x+w:,0]/255.0) #* /255.0
+        plt.imshow(cropped_img)
+        plt.show()
         # make DA preds here in the cropped image
         cropped_img = cv2.resize(cropped_img, (360,360))
         print("Shape = ",cropped_img.shape)
@@ -234,8 +238,6 @@ for data in all_json_annotations['data']:
         print("softmax = ",y_pred)
         prd_from_model = rev_index[int(tf.math.argmax(y_pred, axis=-1))]
         print("Prediction = ",prd_from_model)
-        # plt.imshow(cropped_img[:,:,::-1])
-        # plt.show()
         print(x,y,w,h,name)
         #col = vibrant_colors[random.randint(0,5)]
         cv2.rectangle(final_masked_im, (x,y), (x+w,y+h), col,15)
