@@ -97,7 +97,7 @@ def parse_filepath(filepath):
     
 
 DATA_DIR = 'classification_data_da_aug'  # 302410 images. validate accuracy: 98.8%
-H, W, C = 100, 100, 3
+H, W, C = 200, 200, 3
 N_LABELS = len(index)
 D = 1
 
@@ -170,7 +170,7 @@ for item in dir:
 
 
 DATA_DIR = 'PBC_8_DA'  # 302410 images. validate accuracy: 98.8%
-H, W, C = 100, 100, 3
+H, W, C = 200, 200, 3
 N_LABELS = len(index)
 D = 1
 
@@ -255,11 +255,11 @@ def get_adaptable_network(input_shape=x_source_train.shape[1:]):
     trainable = frozen.output
     trainable = Dense(512, activation="relu")(trainable)
     features = Flatten(name='flatten_1')(trainable)
-    x = Dense(100, activation='relu', name='dense_digits_1')(features)
-    x = Dense(100, activation='relu', name='dense_digits_2')(x)
+    x = Dense(512, activation='relu', name='dense_digits_1')(features)
+    x = Dense(512, activation='relu', name='dense_digits_2')(x)
     digits_classifier = Dense(10, activation="softmax", name="digits_classifier")(x)
 
-    domain_branch = Dense(100, activation="relu", name="dense_domain")(GradReverse()(features))
+    domain_branch = Dense(512, activation="relu", name="dense_domain")(GradReverse()(features))
     domain_classifier = Dense(1, activation="sigmoid", name="domain_classifier")(domain_branch)
     
     return Model(inputs=frozen.input, outputs=[digits_classifier, domain_classifier])
@@ -269,7 +269,7 @@ model.summary()
 
 ######################################
 batch_size = 10
-epochs = 10
+epochs = 200
 ######################################
 
 
@@ -452,15 +452,17 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(10,10)):
     #plt.savefig(filename)
     plt.savefig('confusion_matrix_smear_da_100e.png',dpi=300, bbox_inches='tight')
     plt.savefig('confusion_matrix_smear_da_100e.eps',dpi=300, bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
 cm_analysis(smear_actual_list, smear_pred_list, [i for i in range(8)] , ymap=rev_index, figsize=(10,10))
 
+with open("report_smear_da_100e.txt", "w") as text_file:
+    text_file.write(report)
 
-with open('report_smear_da_100e.txt', 'w') as f:
-    sys.stdout = f # Change the standard output to the file we created.
-    print(report)
-    #sys.stdout = original_stdout # Reset the standard output to its original value
+# with open('report_smear_da_100e.txt', 'w') as f:
+#     sys.stdout = f # Change the standard output to the file we created.
+#     print(report)
+#     #sys.stdout = original_stdout # Reset the standard output to its original value
 
 
 ## Create the report and Confusion Matrices
@@ -531,15 +533,18 @@ def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(10,10)):
     #plt.savefig(filename)
     plt.savefig('confusion_matrix_pbc_da_100e.png',dpi=300, bbox_inches='tight')
     plt.savefig('confusion_matrix_pbc_da_100e.eps',dpi=300, bbox_inches='tight')
-    plt.show()
+    # plt.show()
 
 cm_analysis(pbc_actual_list, pbc_pred_list, [i for i in range(8)] , ymap=rev_index, figsize=(10,10))
 
 
-with open('report_mnist_da_100e.txt', 'w') as f:
-    sys.stdout = f # Change the standard output to the file we created.
-    print(report)
-    #sys.stdout = original_stdout # Reset the standard output to its original value
+with open("report_mnist_da_100e.txt", "w") as text_file:
+    text_file.write(report)
+
+# with open('report_mnist_da_100e.txt', 'w') as f:
+#     sys.stdout = f # Change the standard output to the file we created.
+#     print(report)
+#     #sys.stdout = original_stdout # Reset the standard output to its original value
 
 
 
