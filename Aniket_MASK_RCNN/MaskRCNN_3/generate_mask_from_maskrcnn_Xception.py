@@ -226,11 +226,12 @@ for data in all_json_annotations['data']:
     for items,msks in zip(get_bbox_coords,masks_act):
         x,y,w,h,name, col = int(items[0]), int(items[1]), int(items[2]), int(items[3]), items[4], items[5]
         cropped_img = np.zeros((w,h,3))
-        plt.imshow(msks[y:y+h,x:x+w])
-        plt.show()
-        cropped_img = get_image[y:y+h,x:x+w] #cv2.bitwise_and(get_image[y:y+h,x:x+w],get_image[y:y+h,x:x+w],mask = msks[y:y+h,x:x+w:,0]/255.0) #* /255.0
-        plt.imshow(cropped_img)
-        plt.show()
+        # plt.imshow(255-msks[y:y+h,x:x+w])
+        # plt.show()
+        redundant_mask = cv2.bitwise_and(get_image[y:y+h,x:x+w],get_image[y:y+h,x:x+w],mask = 255-msks[y:y+h,x:x+w:,0]) #* /255.0
+        cropped_img = get_image[y:y+h,x:x+w] - redundant_mask
+        # plt.imshow(cropped_img)
+        # plt.show()
         # make DA preds here in the cropped image
         cropped_img = cv2.resize(cropped_img, (360,360))
         print("Shape = ",cropped_img.shape)
