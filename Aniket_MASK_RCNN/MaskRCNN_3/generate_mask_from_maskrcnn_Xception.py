@@ -105,6 +105,7 @@ with open('data_test_smear_mixed/results.json') as json_data:
     json_data.close()
 
 
+
 for data in all_json_annotations['data']:
     # get the result.json and parse through the data
 
