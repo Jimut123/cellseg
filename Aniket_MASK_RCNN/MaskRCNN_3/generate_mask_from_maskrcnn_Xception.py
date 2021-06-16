@@ -93,7 +93,7 @@ from tensorflow.keras.utils import to_categorical
 from PIL import Image
 
 from tensorflow import keras
-model = keras.models.load_model('classification_Smear_Slides_DA_cropped_aug_8_xception_fine_tuned_100e.h5')
+model = keras.models.load_model('classification_Smear_10_cropped_aug_xception_fine_tuned_100e.h5')
 
 ###########################################################################
 

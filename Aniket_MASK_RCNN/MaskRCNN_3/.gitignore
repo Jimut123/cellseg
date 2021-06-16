@@ -5,6 +5,7 @@ data_test_smear
 data_test_smear_mixed
 classification_Smear_Slides_DA_cropped_aug_8_xception_fine_tuned_100e.h5
 classification_Smear_10_cropped_xception_fine_tuned_100e.h5
+classification_Smear_10_cropped_aug_xception_fine_tuned_100e.h5
 # Mask_RCNN/
 dataset
 Mask_RCNN/assets

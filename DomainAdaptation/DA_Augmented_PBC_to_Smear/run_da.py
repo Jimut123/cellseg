@@ -227,7 +227,7 @@ import tensorflow as tf
 from tensorflow.keras.applications.vgg16 import VGG16
 
 
-from tensorflow.keras.applications import InceptionResNetV2
+from tensorflow.keras.applications import Xception
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import preprocess_input
 # from keras.models import Model
@@ -252,7 +252,7 @@ class GradReverse(tf.keras.layers.Layer):
 def get_adaptable_network(input_shape=x_source_train.shape[1:]):
 
     #inputs = Input(shape=input_shape)
-    frozen = VGG16(weights="imagenet", input_shape=input_shape, include_top=False)
+    frozen = Xception(weights="imagenet", input_shape=input_shape, include_top=False)
     frozen.summary()
 
     trainable = frozen.output

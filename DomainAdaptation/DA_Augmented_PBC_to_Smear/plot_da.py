@@ -38,15 +38,15 @@ for sd_l, al, sdom_l, td_list in zip(history_da['source_image_loss'],  history_d
 
 plt.figure(figsize=(12,6))
 plt.title('Domain Adaptation Losses', fontsize=35, fontname = 'DejaVu Serif', fontweight = 500)
-plt.plot(source_image_loss_list,color='green', linestyle='--', dashes=(5, 1),  linewidth=3.0)
-plt.plot(source_domain_loss_list,color='blue', linestyle='-', dashes=(5, 1),  linewidth=3.0)
+plt.plot(source_image_loss_list,color='blue', linestyle='--', dashes=(5, 1),  linewidth=3.0)
+#plt.plot(source_domain_loss_list,color='blue', linestyle='-', dashes=(5, 1),  linewidth=3.0)
 plt.plot(target_domain_loss_list,color='red', linestyle='-.', dashes=(5, 1),  linewidth=3.0)
 
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
 
-lgd = plt.legend(['Source Image Loss', 'Source Domain Loss', 'Target Domain Loss'],loc="lower right",
-          prop={'family':'DejaVu Serif', 'size':20}, bbox_to_anchor=(1.45, 0.68))
+lgd = plt.legend(['Source Image Loss', 'Domain Loss'],loc="lower right",
+          prop={'family':'DejaVu Serif', 'size':20}, bbox_to_anchor=(1.42, 0.77))
 plt.savefig('da_plot_losses_history.eps',  bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.savefig('da_plot_losses_history.png',  bbox_extra_artists=(lgd,), bbox_inches='tight')
 
