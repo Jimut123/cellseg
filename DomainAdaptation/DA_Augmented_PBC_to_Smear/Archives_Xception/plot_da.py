@@ -45,8 +45,8 @@ plt.plot(target_domain_loss_list,color='red', linestyle='-.', dashes=(5, 1),  li
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
 
-lgd = plt.legend(['Source Classifier Loss', 'Feature Extractor Loss', 'Domain Classifier Loss'],loc="lower right",
-          prop={'family':'DejaVu Serif', 'size':20}, bbox_to_anchor=(1.50, 0.67))
+lgd = plt.legend(['Source Classifier Loss', 'Feature Extractor Loss', 'Domain Classifier Loss'],loc="center right",
+          prop={'family':'DejaVu Serif', 'size':20})#, bbox_to_anchor=(1.50, 0.67))
 plt.savefig('da_plot_losses_history.eps',  bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.savefig('da_plot_losses_history.png',  bbox_extra_artists=(lgd,), bbox_inches='tight')
 
@@ -60,6 +60,6 @@ plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
 
 lgd = plt.legend(['Source Accuracy', 'Source Domain Loss', 'Target Domain Loss'],loc="lower right",
-          prop={'family':'DejaVu Serif', 'size':20}, bbox_to_anchor=(1.39, 0.86))
+          prop={'family':'DejaVu Serif', 'size':20})#, bbox_to_anchor=(1.39, 0.86))
 plt.savefig('da_plot_acc_history.eps',  bbox_extra_artists=(lgd,), bbox_inches='tight')
 plt.savefig('da_plot_acc_history.png',  bbox_extra_artists=(lgd,), bbox_inches='tight')
