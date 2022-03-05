@@ -44,6 +44,8 @@ plt.plot(target_domain_loss_list,color='red', linestyle='-.', dashes=(5, 1),  li
 
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
+plt.xlabel('Epochs', fontsize=20)
+plt.ylabel('Loss', fontsize=20)
 
 lgd = plt.legend(['Source Classifier Loss', 'Feature Extractor Loss', 'Domain Classifier Loss'],loc="center right",
           prop={'family':'DejaVu Serif', 'size':20})#, bbox_to_anchor=(1.50, 0.67))
@@ -58,6 +60,8 @@ plt.plot(source_accuracy_list,color='green', linestyle='--', dashes=(5, 1),  lin
 
 plt.xticks(fontsize=20)
 plt.yticks(fontsize=20)
+plt.xlabel('Epochs', fontsize=20)
+plt.ylabel('Accuracy', fontsize=20)
 
 lgd = plt.legend(['Source Accuracy', 'Source Domain Loss', 'Target Domain Loss'],loc="lower right",
           prop={'family':'DejaVu Serif', 'size':20})#, bbox_to_anchor=(1.39, 0.86))
