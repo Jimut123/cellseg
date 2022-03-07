@@ -11,6 +11,7 @@ pip install --upgrade --no-cache-dir gdown
 
 * [DVC](https://drive.google.com/drive/folders/1---POOO6cmtuxqtky0z5WB-8RmwU7fXD)
 * [PBC dataset](https://drive.google.com/u/3/uc?id=1R-Wp7HhRuQ7JVmTSwY1ZsUI7EwXtHzav)
+* [Smear Slides Cropped](https://drive.google.com/u/3/uc?id=11-s3l6Xa6VI8DB2TLCst77QbLN-TIan-)
 * [PBC Cropped](https://drive.google.com/u/0/uc?id=1gSe7K_D3MKUsUCU2uRbTcXTmlSRVaAqh)
 * [PBC 8 DA Cropped](https://drive.google.com/u/3/uc?id=1mjEJWpfhwtvnN7O7ZzP8dDSPjDeXY1Yy)
 
