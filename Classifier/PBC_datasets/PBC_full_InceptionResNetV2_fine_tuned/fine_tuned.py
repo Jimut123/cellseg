@@ -27,6 +27,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.metrics import AUC, Precision, Recall, SensitivityAtSpecificity, PrecisionAtRecall, \
                                      TruePositives, TrueNegatives, FalsePositives, FalseNegatives
 
+from tensorflow.keras.optimizers import Adam
 
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow import keras
@@ -143,7 +144,7 @@ from tensorflow.keras.applications import InceptionResNetV2
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.vgg16 import preprocess_input
 from keras.models import Model
-from keras.optimizers import Adam
+#from keras.optimizers import Adam
 from keras.layers import Dense, Flatten, GlobalAveragePooling2D
 
 
@@ -167,7 +168,7 @@ for layer in model.layers:
     print(layer, layer.trainable)
 
 
-from keras.optimizers import Adam
+#from keras.optimizers import Adam
 opt = Adam(lr=1e-4)
 model.compile(optimizer=opt, loss='categorical_crossentropy',
             #experimental_run_tf_function=False,
