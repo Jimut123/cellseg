@@ -284,7 +284,20 @@ for i in tqdm(test_idx):
     # print("This = ",rev_index[int(tf.math.argmax(y_pred, axis=-1))])
     # print(to_categorical(index[label], N_LABELS))
     # print(label)
-    
+
+import pickle
+
+with open('y_test_list.pkl', 'wb') as f:
+    pickle.dump(y_test_list, f)
+with open('y_pred_list.pkl', 'wb') as f:
+    pickle.dump(y_pred_list, f)
+
+with open('y_test_list.pkl', 'rb') as f:
+    y_test_list = pickle.load(f)
+with open('y_pred_list.pkl', 'rb') as f:
+    y_pred_list = pickle.load(f)
+
+
 
 from sklearn.metrics import classification_report, confusion_matrix
 matrix = confusion_matrix(y_test_list, y_pred_list)
