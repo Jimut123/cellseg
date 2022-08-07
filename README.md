@@ -16,6 +16,7 @@ pip install --upgrade --no-cache-dir gdown
 * [PBC 8 DA Cropped](https://drive.google.com/u/3/uc?id=1mjEJWpfhwtvnN7O7ZzP8dDSPjDeXY1Yy)
 
 
+***
 
 The dataset is annotated using [CVAT](https://github.com/openvinotoolkit/cvat). We are planning to release an extended version of this dataset soon. If you are a haematologist, then you could help us by annotating and adding more data. **Please make sure that the data is ethically cleared before uploading new data in public servers, such as Github.**
 
