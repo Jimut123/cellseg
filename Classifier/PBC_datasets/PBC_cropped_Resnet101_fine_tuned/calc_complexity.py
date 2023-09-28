@@ -197,8 +197,8 @@ print("Total Linear (Dense) Layers:", linear_layer_count)
 
 
 with open("COMPLEXITY_DUMP.txt", 'a') as f:
-    f.write("Total Convolutional Layers: "+conv_layer_count+'\n')
-    f.write("Total Linear (Dense) Layers:"+linear_layer_count+'\n')
+    f.write("Total Convolutional Layers: "+str(conv_layer_count)+'\n')
+    f.write("Total Linear (Dense) Layers:"+str(linear_layer_count)+'\n')
     f.close()
     
 
