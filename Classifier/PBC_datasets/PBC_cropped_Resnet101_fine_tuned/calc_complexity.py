@@ -61,6 +61,7 @@ get_freq = {}
 for item in dir:
   freq = len(glob.glob("{}/*".format(item)))
   print("freq == ",freq)
+  print("item == ",item)
   item_name  = item.split('/')[1]
   get_freq[item_name] = freq
   #get_freq[count] = freq
@@ -84,13 +85,15 @@ print(len(total_img_names))
 print(short_labels)
 print(short_index)
 
-print("-$$"*20)
+
 
 
 short_rev_index = {}
 for item in short_index:
   short_rev_index[short_index[item]] = item
 print(short_rev_index)
+
+print("-$$"*20)
 
 index = {}
 rev_index = {}
