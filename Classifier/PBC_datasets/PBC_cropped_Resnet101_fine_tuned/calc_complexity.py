@@ -368,7 +368,7 @@ with open("COMPLEXITY_DUMP.txt", 'a') as f:
     
 
 # Train the model and record training times for each epoch
-epochs = 10
+epochs = 1
 epoch_times = []
 
 for epoch in range(epochs):
@@ -435,7 +435,19 @@ for i in tqdm(test_idx):
     im = Image.open(file_)
     im = im.resize((360, 360))
     im = np.array(im) / 255.0
+    
+    ########################################################
+    start_time = time.time()  # Record the start time
+    
     y_pred = model.predict(im[np.newaxis, ...])
+    
+    end_time = time.time()  # Record the end time
+    epoch_time = end_time - start_time  # Calculate the epoch training time
+    with open("INFERENCE_TIME.txt", 'a') as f:
+        f.write(str(epoch_time)+'\n')
+        f.close()
+    
+    ########################################################
     y_pred_list.append(int(tf.math.argmax(y_pred, axis=-1)))
     y_test_list.append(index[label])
 
