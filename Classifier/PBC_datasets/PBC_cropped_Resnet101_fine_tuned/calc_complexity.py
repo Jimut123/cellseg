@@ -84,6 +84,8 @@ print(len(total_img_names))
 print(short_labels)
 print(short_index)
 
+print("-$$"*20)
+
 
 short_rev_index = {}
 for item in short_index:
