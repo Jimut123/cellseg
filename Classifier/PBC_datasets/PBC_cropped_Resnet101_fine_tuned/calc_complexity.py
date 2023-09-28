@@ -55,7 +55,7 @@ import os
 
 
 
-dir = glob.glob('PBC_dataset_normal_DIB_cropped/*')
+dir = glob.glob('../PBC_dataset_normal_DIB_cropped/*')
 get_freq = {}
 # count = 1
 for item in dir:
@@ -73,7 +73,7 @@ total_img_names = []
 short_labels = []
 for item in dir:
   print(item)
-  img_names = glob.glob("{}/*".format(item))[:5]
+  img_names = glob.glob("../{}/*".format(item))[:5]
   print("img names = ",img_names[:10])
   short_name = str(img_names[0].split('.')[0]).split('/')[2].split('_')[0]
   short_index[short_name] = img_names[0].split('/')[1]
@@ -114,7 +114,7 @@ def parse_filepath(filepath):
         print('error to parse %s. %s' % (filepath, e))
         return None, None
 
-DATA_DIR = 'PBC_dataset_normal_DIB_cropped'  # 302410 images. validate accuracy: 98.8%
+DATA_DIR = '../PBC_dataset_normal_DIB_cropped'  # 302410 images. validate accuracy: 98.8%
 H, W, C = 360, 360, 3
 N_LABELS = len(index)
 D = 1
