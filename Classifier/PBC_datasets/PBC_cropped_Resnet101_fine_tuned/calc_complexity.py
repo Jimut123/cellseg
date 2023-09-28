@@ -256,7 +256,8 @@ with open("COMPLEXITY_DUMP.txt", 'a') as f:
     f.write("Total Parameters: "+str(total_params)+'\n')
     f.write("Trainable params: "+str(trainable_count)+'\n')
     f.write("Non-trainable params: "+str(non_trainable_count)+'\n')
-    f.write("FLOPs: "+str(flops.total_float_ops)+"\n")
+    f.write("FLOPs (total float operations): "+str(flops.total_float_ops)+"\n")
+    f.write("Full flop report \n"+str(flops)+"\n")
     f.close()
     
 
