@@ -1,3 +1,4 @@
+*.zip
 PBC_dataset_normal_DIB_cropped/
 classification_pbc_8_cropped_resnet101_fine_tuned_100e.h5	
 classification_pbc_8_cropped_resnet101_fine_tuned_100e.h5
