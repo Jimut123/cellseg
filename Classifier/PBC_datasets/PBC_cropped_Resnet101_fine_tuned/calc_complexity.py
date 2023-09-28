@@ -62,7 +62,7 @@ for item in dir:
   freq = len(glob.glob("{}/*".format(item)))
   print("freq == ",freq)
   print("item == ",item)
-  item_name  = item.split('/')[1]
+  item_name  = item.split('/')[-1]
   get_freq[item_name] = freq
   #get_freq[count] = freq
   #count += 1
