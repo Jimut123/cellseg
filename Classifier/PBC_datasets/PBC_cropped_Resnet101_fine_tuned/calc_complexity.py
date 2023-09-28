@@ -208,7 +208,7 @@ def get_data_generator(df, indices, for_training, batch_size=16):
             r = df.iloc[i]
             #print(" r = ", r, " i = ",i)
             file, label = r['file'], r['label']
-            #print("file, label = ",file, label)
+            print("file, label = ",file, label)
             im = Image.open(file)
             im = im.resize((360, 360))
             im = np.array(im) / 255.0
