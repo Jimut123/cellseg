@@ -4,9 +4,11 @@
 # Tasks to do:
 # 
 
+##################################################
 import os
 # set the visible devices to 7 here
 os.environ['CUDA_VISIBLE_DEVICES'] = '6'
+##################################################
 
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
@@ -366,30 +368,44 @@ with open("COMPLEXITY_DUMP.txt", 'a') as f:
     f.write("Total memory usage: "+str(get_memory_usage)+"\n")
     f.close()
     
+class TimeHistory(keras.callbacks.Callback):
+    def on_train_begin(self, logs={}):
+        self.times = []
 
-# Train the model and record training times for each epoch
-epochs = 1
-epoch_times = []
+    def on_epoch_begin(self, batch, logs={}):
+        self.epoch_time_start = time.time()
 
-for epoch in range(epochs):
-    start_time = time.time()  # Record the start time
-    history = history = model.fit(train_gen,
-                    steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=1,
-                    callbacks=[tensorboard_callback,callbacks],
-                    validation_data=valid_gen,
-                    validation_steps=len(valid_idx)//valid_batch_size)
-    end_time = time.time()  # Record the end time
+    def on_epoch_end(self, batch, logs={}):
+        with open("TRAIN_EPOCH_TIME.txt", 'a') as f:
+            f.write(str(time.time() - self.epoch_time_start)+'\n')
+            f.close()
+        # self.times.append(time.time() - self.epoch_time_start)
+        
+        
+# # Train the model and record training times for each epoch
+# epochs = 1
+# epoch_times = []
+
+# for epoch in range(epochs):
+#     start_time = time.time()  # Record the start time
+#     end_time = time.time()  # Record the end time
     
-    epoch_time = end_time - start_time  # Calculate the epoch training time
-    epoch_times.append(epoch_time)  # Store the epoch training time
-    
-    with open("TRAIN_EPOCH_TIME.txt", 'a') as f:
-        f.write(str(epoch_time)+'\n')
-        f.close()
-    
-    
-    # print(f"Epoch {epoch + 1} took {epoch_time:.2f} seconds")
+#     epoch_time = end_time - start_time  # Calculate the epoch training time
+#     epoch_times.append(epoch_time)  # Store the epoch training time
+
+time_callback = TimeHistory()
+
+history = history = model.fit(train_gen,
+                steps_per_epoch=len(train_idx)//batch_size,
+                epochs=1,
+                callbacks=[tensorboard_callback,callbacks,time_callback],
+                validation_data=valid_gen,
+                validation_steps=len(valid_idx)//valid_batch_size)
+ 
+
+
+
+# print(f"Epoch {epoch + 1} took {epoch_time:.2f} seconds")
 
 
 ############################################################################
