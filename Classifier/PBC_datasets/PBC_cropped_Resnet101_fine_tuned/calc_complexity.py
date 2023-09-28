@@ -176,14 +176,6 @@ for layer in model.layers:
     print(layer, layer.trainable)
 
 
-from keras.optimizers import Adam
-opt = Adam(lr=1e-4)
-model.compile(optimizer=opt, loss='categorical_crossentropy',
-            #experimental_run_tf_function=False,
-            metrics = ['accuracy', AUC(curve="ROC"), Precision(), Recall(), \
-            TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()]
-            )
-
 
 
 
@@ -371,6 +363,14 @@ with open("COMPLEXITY_DUMP.txt", 'a') as f:
 
 ############################################################################
 
+
+from keras.optimizers import Adam
+opt = Adam(lr=1e-4)
+model.compile(optimizer=opt, loss='categorical_crossentropy',
+            #experimental_run_tf_function=False,
+            metrics = ['accuracy', AUC(curve="ROC"), Precision(), Recall(), \
+            TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()]
+            )
 
 
 
