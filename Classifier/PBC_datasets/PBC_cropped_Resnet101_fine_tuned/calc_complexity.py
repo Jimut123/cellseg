@@ -119,12 +119,12 @@ def parse_filepath(filepath):
         print('error to parse %s. %s' % (filepath, e))
         return None, None
 
-DATA_DIR = '../PBC_dataset_normal_DIB_cropped'  # 302410 images. validate accuracy: 98.8%
+DATA_DIR = 'PBC_dataset_normal_DIB_cropped'  # 302410 images. validate accuracy: 98.8%
 H, W, C = 360, 360, 3
 N_LABELS = len(index)
 D = 1
 
-files = glob.glob("{}/*/*.jpg".format(DATA_DIR))
+files = glob.glob("../{}/*/*.jpg".format(DATA_DIR))
 print("Total files = ",len(files))
 
 
