@@ -167,7 +167,7 @@ trainable = Dense(N_LABELS, activation="softmax")(trainable)
 model = Model(inputs=frozen.input, outputs=trainable)
 model.summary()
 
-
+############################################################################
 
 # Initialize a counter for convolutional layers
 conv_layer_count = 0
@@ -195,6 +195,15 @@ for layer in model.layers:
 # Print the total number of linear layers in the model
 print("Total Linear (Dense) Layers:", linear_layer_count)
 
+
+with open("COMPLEXITY_DUMP.txt", 'a') as f:
+    f.write("Total Convolutional Layers: "+conv_layer_count+'\n')
+    f.write("Total Linear (Dense) Layers:"+linear_layer_count+'\n')
+    f.close()
+    
+
+
+############################################################################
 
 # model.layers
 # for layer in model.layers[:-4]:
