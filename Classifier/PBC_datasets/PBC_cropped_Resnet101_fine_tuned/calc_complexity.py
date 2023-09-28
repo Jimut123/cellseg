@@ -167,6 +167,21 @@ trainable = Dense(N_LABELS, activation="softmax")(trainable)
 model = Model(inputs=frozen.input, outputs=trainable)
 model.summary()
 
+
+
+# Initialize a counter for convolutional layers
+conv_layer_count = 0
+
+# Iterate through the layers of the model
+for layer in model.layers:
+    # Check if the layer is a convolutional layer
+    if 'Conv2D' in str(layer.__class__):
+        conv_layer_count += 1
+
+# Print the total number of convolutional layers in the model
+print("Total Convolutional Layers:", conv_layer_count)
+
+
 # model.layers
 # for layer in model.layers[:-4]:
 #     layer.trainable = False
