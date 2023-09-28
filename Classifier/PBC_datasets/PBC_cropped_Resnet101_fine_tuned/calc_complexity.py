@@ -74,7 +74,7 @@ short_labels = []
 for item in dir:
   print(item)
   img_names = glob.glob("{}/*".format(item))[:5]
-  print("img names = ",img_names[:10])
+  print("img names = ",img_names)
   short_name = str(img_names[0].split('.')[0]).split('/')[2].split('_')[0]
   short_index[short_name] = img_names[0].split('/')[1]
   short_labels.append(short_name)
