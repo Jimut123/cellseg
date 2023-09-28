@@ -168,6 +168,7 @@ model = Model(inputs=frozen.input, outputs=trainable)
 model.summary()
 
 ############################################################################
+from keras import backend as K
 
 # Initialize a counter for convolutional layers
 conv_layer_count = 0
@@ -196,9 +197,26 @@ for layer in model.layers:
 print("Total Linear (Dense) Layers:", linear_layer_count)
 
 
+total_params = model.count_params()
+print("Total Parameters:", total_params)
+
+trainable_count = int(
+    np.sum([K.count_params(p) for p in set(model.trainable_weights)]))
+non_trainable_count = int(
+    np.sum([K.count_params(p) for p in set(model.non_trainable_weights)]))
+
+print('Total params: {:,}'.format(trainable_count + non_trainable_count))
+print('Trainable params: {:,}'.format(trainable_count))
+print('Non-trainable params: {:,}'.format(non_trainable_count))
+
 with open("COMPLEXITY_DUMP.txt", 'a') as f:
     f.write("Total Convolutional Layers: "+str(conv_layer_count)+'\n')
     f.write("Total Linear (Dense) Layers:"+str(linear_layer_count)+'\n')
+    f.write("Total Parameters:"+str(total_params)+'\n')
+    f.write('Total params: {:,}'.format(trainable_count + non_trainable_count)+'\n')
+    f.write('Trainable params: {:,}'.format(trainable_count)+'\n')
+    f.write('Non-trainable params: {:,}'.format(non_trainable_count)+'\n')
+    
     f.close()
     
 
