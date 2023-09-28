@@ -167,6 +167,25 @@ trainable = Dense(N_LABELS, activation="softmax")(trainable)
 model = Model(inputs=frozen.input, outputs=trainable)
 model.summary()
 
+
+
+# model.layers
+# for layer in model.layers[:-4]:
+#     layer.trainable = False
+for layer in model.layers:
+    print(layer, layer.trainable)
+
+
+from keras.optimizers import Adam
+opt = Adam(lr=1e-4)
+model.compile(optimizer=opt, loss='categorical_crossentropy',
+            #experimental_run_tf_function=False,
+            metrics = ['accuracy', AUC(curve="ROC"), Precision(), Recall(), \
+            TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()]
+            )
+
+
+
 ############################################################################
 from keras.utils.layer_utils import count_params
 
@@ -206,34 +225,43 @@ trainable_count = count_params(model.trainable_weights)
 non_trainable_count = count_params(model.non_trainable_weights)
 
 
+
+
+session = tf.compat.v1.Session()
+graph = tf.compat.v1.get_default_graph()
+
+with graph.as_default():
+    with session.as_default():
+        model = keras.applications.mobilenet.MobileNet(
+                alpha=1, weights=None, input_tensor=tf.compat.v1.placeholder('float32', shape=(1, 224, 224, 3)))
+
+        run_meta = tf.compat.v1.RunMetadata()
+        opts = tf.compat.v1.profiler.ProfileOptionBuilder.float_operation()
+
+        # Optional: save printed results to file
+        # flops_log_path = os.path.join(tempfile.gettempdir(), 'tf_flops_log.txt')
+        # opts['output'] = 'file:outfile={}'.format(flops_log_path)
+
+        # We use the Keras session graph in the call to the profiler.
+        flops = tf.compat.v1.profiler.profile(graph=graph,
+                                                run_meta=run_meta, cmd='op', options=opts)
+
+tf.compat.v1.reset_default_graph()
+
+
+
 with open("COMPLEXITY_DUMP.txt", 'a') as f:
     f.write("Total Convolutional Layers: "+str(conv_layer_count)+'\n')
     f.write("Total Linear (Dense) Layers: "+str(linear_layer_count)+'\n')
     f.write("Total Parameters: "+str(total_params)+'\n')
     f.write("Trainable params: "+str(trainable_count)+'\n')
     f.write("Non-trainable params: "+str(non_trainable_count)+'\n')
-    
+    f.write("FLOPs: "+str(flops.total_float_ops)+"\n")
     f.close()
     
 
 
 ############################################################################
-
-# model.layers
-# for layer in model.layers[:-4]:
-#     layer.trainable = False
-for layer in model.layers:
-    print(layer, layer.trainable)
-
-
-from keras.optimizers import Adam
-opt = Adam(lr=1e-4)
-model.compile(optimizer=opt, loss='categorical_crossentropy',
-            #experimental_run_tf_function=False,
-            metrics = ['accuracy', AUC(curve="ROC"), Precision(), Recall(), \
-            TruePositives(), TrueNegatives(), FalsePositives(), FalseNegatives()]
-            )
-
 
 
 from tensorflow.keras.utils import to_categorical
