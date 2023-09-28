@@ -186,6 +186,73 @@ model.compile(optimizer=opt, loss='categorical_crossentropy',
 
 
 
+
+
+
+from tensorflow.keras.utils import to_categorical
+from PIL import Image
+
+def get_data_generator(df, indices, for_training, batch_size=16):
+    images, labels = [], []
+    while True:
+        #print("indices = ",indices)    
+        #print("len indices = ",len(indices))
+        for i in indices:
+            r = df.iloc[i]
+            #print(" r = ", r, " i = ",i)
+            file, label = r['file'], r['label']
+            #print("file, label = ",file, label)
+            im = Image.open(file)
+            im = im.resize((360, 360))
+            im = np.array(im) / 255.0
+            #print(im.shape)
+            images.append(im)
+            #print(np.asarray([to_categorical(index[label], N_LABELS)]))
+            #print(np.asarray([to_categorical(index[label], N_LABELS)]).shape)
+            labels.append(to_categorical(index[label], N_LABELS))
+            if len(images) >= batch_size:
+                yield np.array(images), np.array(labels)
+                images, labels = [], []
+        # if not for_training:
+        #     break
+
+
+from tensorflow.keras.utils import to_categorical
+from PIL import Image
+
+def get_data_generator_custom(df, indices, for_training, batch_size=16):
+    labels = []
+    while True:
+        for i in indices:
+            r = df.iloc[i]
+            file, label = r['file'], r['label']
+            labels.append(to_categorical(index[label], N_LABELS))
+            if len(images) >= batch_size:
+                yield  np.array(labels)
+                labels = []
+
+
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow import keras
+# batch_size = 100
+# valid_batch_size = 32
+batch_size = 16
+valid_batch_size = 16
+train_gen = get_data_generator(df, train_idx, for_training=True, batch_size=batch_size)
+valid_gen = get_data_generator(df, valid_idx, for_training=True, batch_size=valid_batch_size)
+
+callbacks = [
+    ModelCheckpoint("./model_checkpoint", monitor='val_loss'),
+    #ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=4)
+]
+# for storing logs into tensorboard
+logdir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
+tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
+
+
+
+
+
 ############################################################################
 from keras.utils.layer_utils import count_params
 
@@ -286,7 +353,7 @@ def get_model_memory_usage(batch_size, model):
     gbytes = np.round(total_memory / (1024.0 ** 3), 3) + internal_model_mem_count
     return gbytes
 
-get_memory_usage =  get_model_memory_usage(batch_size=16, model)
+get_memory_usage =  get_model_memory_usage(batch_size, model)
 
 
 with open("COMPLEXITY_DUMP.txt", 'a') as f:
@@ -305,65 +372,8 @@ with open("COMPLEXITY_DUMP.txt", 'a') as f:
 ############################################################################
 
 
-from tensorflow.keras.utils import to_categorical
-from PIL import Image
-
-def get_data_generator(df, indices, for_training, batch_size=16):
-    images, labels = [], []
-    while True:
-        #print("indices = ",indices)    
-        #print("len indices = ",len(indices))
-        for i in indices:
-            r = df.iloc[i]
-            #print(" r = ", r, " i = ",i)
-            file, label = r['file'], r['label']
-            #print("file, label = ",file, label)
-            im = Image.open(file)
-            im = im.resize((360, 360))
-            im = np.array(im) / 255.0
-            #print(im.shape)
-            images.append(im)
-            #print(np.asarray([to_categorical(index[label], N_LABELS)]))
-            #print(np.asarray([to_categorical(index[label], N_LABELS)]).shape)
-            labels.append(to_categorical(index[label], N_LABELS))
-            if len(images) >= batch_size:
-                yield np.array(images), np.array(labels)
-                images, labels = [], []
-        # if not for_training:
-        #     break
 
 
-from tensorflow.keras.utils import to_categorical
-from PIL import Image
-
-def get_data_generator_custom(df, indices, for_training, batch_size=16):
-    labels = []
-    while True:
-        for i in indices:
-            r = df.iloc[i]
-            file, label = r['file'], r['label']
-            labels.append(to_categorical(index[label], N_LABELS))
-            if len(images) >= batch_size:
-                yield  np.array(labels)
-                labels = []
-
-
-from tensorflow.keras.callbacks import ModelCheckpoint
-from tensorflow import keras
-# batch_size = 100
-# valid_batch_size = 32
-batch_size = 16
-valid_batch_size = 16
-train_gen = get_data_generator(df, train_idx, for_training=True, batch_size=batch_size)
-valid_gen = get_data_generator(df, valid_idx, for_training=True, batch_size=valid_batch_size)
-
-callbacks = [
-    ModelCheckpoint("./model_checkpoint", monitor='val_loss'),
-    #ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=4)
-]
-# for storing logs into tensorboard
-logdir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 history = model.fit(train_gen,
                     steps_per_epoch=len(train_idx)//batch_size,
