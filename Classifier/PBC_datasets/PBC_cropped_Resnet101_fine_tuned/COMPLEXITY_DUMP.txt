@@ -1,0 +1,54 @@
+Total Convolutional Layers: 104
+Total Linear (Dense) Layers: 3
+Total Parameters: 42924609
+Trainable params: 42819265
+Non-trainable params: 105344
+Total memory usage: 8.979
+Total Convolutional Layers: 104
+Total Linear (Dense) Layers: 3
+Total Parameters: 42924609
+Trainable params: 42819265
+Non-trainable params: 105344
+Total memory usage: 8.979
+Total Convolutional Layers: 104
+Total Linear (Dense) Layers: 3
+Total Parameters: 42924609
+Trainable params: 42819265
+Non-trainable params: 105344
+Total memory usage: 8.979
+Total Convolutional Layers: 104
+Total Linear (Dense) Layers: 3
+Total Parameters: 42924840
+Trainable params: 42819496
+Non-trainable params: 105344
+Total memory usage: 8.979
+Total Convolutional Layers: 104
+Total Linear (Dense) Layers: 3
+Total Parameters: 42924840
+Trainable params: 42819496
+Non-trainable params: 105344
+Total memory usage: 8.979
+Total Convolutional Layers: 104
+Total Linear (Dense) Layers: 3
+Total Parameters: 42924840
+Trainable params: 42819496
+Non-trainable params: 105344
+Total memory usage: 8.979
+Total Convolutional Layers: 104
+Total Linear (Dense) Layers: 3
+Total Parameters: 42924840
+Trainable params: 42819496
+Non-trainable params: 105344
+Total memory usage: 8.979
+Total Convolutional Layers: 104
+Total Linear (Dense) Layers: 3
+Total Parameters: 42924840
+Trainable params: 42819496
+Non-trainable params: 105344
+Total memory usage: 8.979
+Total Convolutional Layers: 104
+Total Linear (Dense) Layers: 3
+Total Parameters: 42924840
+Trainable params: 42819496
+Non-trainable params: 105344
+Total memory usage: 8.979
