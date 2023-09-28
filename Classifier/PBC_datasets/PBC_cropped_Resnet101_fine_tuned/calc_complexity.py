@@ -182,6 +182,20 @@ for layer in model.layers:
 print("Total Convolutional Layers:", conv_layer_count)
 
 
+
+# Initialize a counter for linear layers
+linear_layer_count = 0
+
+# Iterate through the layers of the model
+for layer in model.layers:
+    # Check if the layer is a dense layer
+    if 'Dense' in str(layer.__class__):
+        linear_layer_count += 1
+
+# Print the total number of linear layers in the model
+print("Total Linear (Dense) Layers:", linear_layer_count)
+
+
 # model.layers
 # for layer in model.layers[:-4]:
 #     layer.trainable = False
