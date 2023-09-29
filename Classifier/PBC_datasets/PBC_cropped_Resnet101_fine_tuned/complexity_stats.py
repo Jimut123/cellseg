@@ -251,10 +251,6 @@ tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
 
 
-
-
-
-
 ############################################################################
 from keras.utils.layer_utils import count_params
 
@@ -292,10 +288,6 @@ print("Total Parameters:", total_params)
 
 trainable_count = count_params(model.trainable_weights)
 non_trainable_count = count_params(model.non_trainable_weights)
-
-
-
-
 
 
 
@@ -382,27 +374,12 @@ history = history = model.fit(train_gen,
                 callbacks=[tensorboard_callback,callbacks,time_callback],
                 validation_data=valid_gen,
                 validation_steps=len(valid_idx)//valid_batch_size)
- 
-
 
 
 # print(f"Epoch {epoch + 1} took {epoch_time:.2f} seconds")
 
 
 ############################################################################
-
-
-
-
-
-
-history = model.fit(train_gen,
-                    steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=100,
-                    callbacks=[tensorboard_callback,callbacks],
-                    validation_data=valid_gen,
-                    validation_steps=len(valid_idx)//valid_batch_size)
-
 
 
 import pandas as pd
@@ -458,10 +435,15 @@ for i in tqdm(test_idx):
 
 # calculate the size of .h5 and store it in the statistics
 
-file_size = os.stat('d:/file.jpg')
-print("Size of file :", file_size.st_size, "bytes")
+all_h5_files = glob.glob("*.h5")
 
+file_size = os.stat(all_h5_files[0])
+file_size_mb = file_size.st_size/(1024*1024)
 
+with open("COMPLEXITY_DUMP.txt", 'a') as f:
+    f.write("File size in MB: "+str(file_size_mb)+"\n")
+    f.close()
+    
 
 session = tf.compat.v1.Session()
 graph = tf.compat.v1.get_default_graph()
