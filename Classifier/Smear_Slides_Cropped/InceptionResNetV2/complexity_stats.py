@@ -1,10 +1,9 @@
-# PBC Cropped - InceptionResNetV2 
-
+# Smear Slides Cropped - InceptionResNetV2 fine tuned
 
 ##################################################
 import os
 # set the visible devices to 7 here
-os.environ['CUDA_VISIBLE_DEVICES'] = '4'
+os.environ['CUDA_VISIBLE_DEVICES'] = '5'
 ##################################################
 
 
@@ -53,34 +52,24 @@ import os
 
 
 
-dir = glob.glob('PBC_dataset_normal_DIB_cropped/*')
+dir = glob.glob('../classification_data/*')
+
 get_freq = {}
 # count = 1
 for item in dir:
   freq = len(glob.glob("{}/*".format(item)))
   print(freq)
-  item_name  = item.split('/')[1]
+  item_name  = item.split('/')[2]
   get_freq[item_name] = freq
-  #get_freq[count] = freq
-  #count += 1
-  #get_freq.append(freq)
 
+print(get_freq)
 
 short_index = {}
-total_img_names = []
-short_labels = []
-for item in dir:
-  print(item)
-  img_names = glob.glob("{}/*".format(item))[:5]
-  print("img names = ",img_names[:10])
-  short_name = str(img_names[0].split('.')[0]).split('/')[2].split('_')[0]
-  short_index[short_name] = img_names[0].split('/')[1]
-  short_labels.append(short_name)
-  total_img_names.append(img_names)
-print(total_img_names)
-print(len(total_img_names))
-print(short_labels)
-print(short_index)
+
+c = 0
+for item in get_freq:
+    short_index[get_freq[item]] = c 
+    c += 1
 
 
 short_rev_index = {}
@@ -102,16 +91,13 @@ print(rev_index)
 
 def parse_filepath(filepath):
     try:
-        #path, filename = os.path.split(filepath)
-        label = filepath.split('/')[1]
-        #filename, ext = os.path.splitext(filename)
-        #label, _ = filename.split("_")
+        label = filepath.split('/')[2]
         return label
     except Exception as e:
         print('error to parse %s. %s' % (filepath, e))
         return None, None
 
-DATA_DIR = 'PBC_dataset_normal_DIB_cropped'  # 302410 images. validate accuracy: 98.8%
+DATA_DIR = '../classification_data'  
 H, W, C = 360, 360, 3
 N_LABELS = len(index)
 D = 1
@@ -128,7 +114,6 @@ df['file'] = files
 df.columns = ['label', 'file']
 df = df.dropna()
 df.tail()
-
 
 
 np.random.seed(42)
@@ -168,9 +153,9 @@ trainable = Dense(N_LABELS, activation="softmax")(trainable)
 model = Model(inputs=frozen.input, outputs=trainable)
 model.summary()
 
-model.layers
-for layer in model.layers[:-4]:
-    layer.trainable = False
+# model.layers
+# for layer in model.layers[:-4]:
+#     layer.trainable = False
 for layer in model.layers:
     print(layer, layer.trainable)
 
@@ -381,15 +366,15 @@ history = history = model.fit(train_gen,
 
 import pandas as pd
 hist_df = pd.DataFrame(history.history) 
-hist_json_file = 'history_pbc_8_InceptionResNetV2_100e.json' 
+hist_json_file = 'history_Smear_10_cropped_InceptionResNetV2_fine_tuned_100e.json' 
 with open(hist_json_file, mode='w') as f:
     hist_df.to_json(f)
 
 # download the model in computer for later use
-model.save('classification_pbc_8_InceptionResNetV2_100e.h5')
+model.save('classification_Smear_10_cropped_InceptionResNetV2_fine_tuned_100e.h5')
 
 from tensorflow import keras
-model = keras.models.load_model('classification_pbc_8_InceptionResNetV2_100e.h5')
+model = keras.models.load_model('classification_Smear_10_cropped_InceptionResNetV2_fine_tuned_100e.h5')
 
 
 
@@ -401,6 +386,8 @@ from PIL import Image
 from tqdm import tqdm
 y_pred_list = []
 y_test_list = []
+
+
 
 for i in tqdm(test_idx):
     r = df.iloc[i]
@@ -423,8 +410,8 @@ for i in tqdm(test_idx):
     ########################################################
     y_pred_list.append(int(tf.math.argmax(y_pred, axis=-1)))
     y_test_list.append(index[label])
-
     
+
 
 ########################################################
 
@@ -467,7 +454,3 @@ with open("COMPLEXITY_DUMP.txt", 'a') as f:
     f.close()
     
 ########################################################
-
-
-
-
