@@ -1,8 +1,4 @@
-# Name: Jimut Bahan Pal, 28-09-2023
-# Tasks for the revision of ESWA
-
-# Tasks to do:
-# 
+# PBC Cropped - InceptionResNetV2 fine tuned
 
 ##################################################
 import os
@@ -22,7 +18,7 @@ import numpy as np
 import glob
 import time
 import cv2
-
+import os
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 
@@ -55,14 +51,13 @@ import os
 
 
 
-dir = glob.glob('../PBC_dataset_normal_DIB_cropped/*')
+dir = glob.glob('PBC_dataset_normal_DIB_cropped/*')
 get_freq = {}
 # count = 1
 for item in dir:
   freq = len(glob.glob("{}/*".format(item)))
-  print("freq == ",freq)
-  print("item == ",item)
-  item_name  = item.split('/')[-1]
+  print(freq)
+  item_name  = item.split('/')[1]
   get_freq[item_name] = freq
   #get_freq[count] = freq
   #count += 1
@@ -75,9 +70,9 @@ short_labels = []
 for item in dir:
   print(item)
   img_names = glob.glob("{}/*".format(item))[:5]
-  print("img names = ",img_names)
-  short_name = str(img_names[0].split('.')[-2]).split('/')[3].split('_')[0]
-  short_index[short_name] = img_names[0].split('/')[2]
+  print("img names = ",img_names[:10])
+  short_name = str(img_names[0].split('.')[0]).split('/')[2].split('_')[0]
+  short_index[short_name] = img_names[0].split('/')[1]
   short_labels.append(short_name)
   total_img_names.append(img_names)
 print(total_img_names)
@@ -86,14 +81,10 @@ print(short_labels)
 print(short_index)
 
 
-
-
 short_rev_index = {}
 for item in short_index:
   short_rev_index[short_index[item]] = item
 print(short_rev_index)
-
-print("-$$"*20)
 
 index = {}
 rev_index = {}
@@ -104,7 +95,6 @@ for item in get_freq:
   count += 1 
 print(index)
 print(rev_index)
-
 
 
 
@@ -124,7 +114,7 @@ H, W, C = 360, 360, 3
 N_LABELS = len(index)
 D = 1
 
-files = glob.glob("../{}/*/*.jpg".format(DATA_DIR))
+files = glob.glob("{}/*/*.jpg".format(DATA_DIR))
 print("Total files = ",len(files))
 
 
@@ -153,17 +143,19 @@ print('train count: %s, valid count: %s, test count: %s' % (
     len(train_idx), len(valid_idx), len(test_idx)))
 
 
-from tensorflow.keras.applications.resnet import ResNet101
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.resnet import preprocess_input
-from keras.models import Model
 
+
+from tensorflow.keras.applications import InceptionResNetV2
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.vgg16 import preprocess_input
+from keras.models import Model
+from keras.optimizers import Adam
 from keras.layers import Dense, Flatten, GlobalAveragePooling2D
 
 
-frozen = ResNet101(weights="imagenet", input_shape=(360,360,3), include_top=False)
-frozen.summary()
 
+frozen = InceptionResNetV2(weights="imagenet", input_shape=(360,360,3), include_top=False)
+frozen.summary()
 
 trainable = frozen.output
 trainable = GlobalAveragePooling2D()(trainable)
@@ -173,8 +165,6 @@ trainable = Dense(32, activation="relu")(trainable)
 trainable = Dense(N_LABELS, activation="softmax")(trainable)
 model = Model(inputs=frozen.input, outputs=trainable)
 model.summary()
-
-
 
 # model.layers
 # for layer in model.layers[:-4]:
@@ -193,9 +183,6 @@ model.compile(optimizer=opt, loss='categorical_crossentropy',
 
 
 
-
-
-
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 
@@ -208,9 +195,9 @@ def get_data_generator(df, indices, for_training, batch_size=16):
             r = df.iloc[i]
             #print(" r = ", r, " i = ",i)
             file, label = r['file'], r['label']
-            print("file, label = ",file, label)
+            #print("file, label = ",file, label)
             im = Image.open(file)
-            im = im.resize((360, 360))
+            im = im.resize((360,360))
             im = np.array(im) / 255.0
             #print(im.shape)
             images.append(im)
@@ -238,7 +225,6 @@ def get_data_generator_custom(df, indices, for_training, batch_size=16):
                 yield  np.array(labels)
                 labels = []
 
-
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow import keras
 # batch_size = 100
@@ -255,8 +241,6 @@ callbacks = [
 # for storing logs into tensorboard
 logdir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
-
-
 
 
 
@@ -390,21 +374,18 @@ history = history = model.fit(train_gen,
 
 ############################################################################
 
-
-
-
-
 import pandas as pd
 hist_df = pd.DataFrame(history.history) 
-hist_json_file = 'history_pbc_8_cropped_resnet101_fine_tuned_100e.json' 
+hist_json_file = 'history_pbc_8_cropped_InceptionResNetV2_fine_tuned_100e.json' 
 with open(hist_json_file, mode='w') as f:
     hist_df.to_json(f)
 
 # download the model in computer for later use
-model.save('classification_pbc_8_cropped_resnet101_fine_tuned_100e.h5')
+model.save('classification_pbc_8_cropped_InceptionResNetV2_fine_tuned_100e.h5')
 
 from tensorflow import keras
-model = keras.models.load_model('classification_pbc_8_cropped_resnet101_fine_tuned_100e.h5')
+model = keras.models.load_model('classification_pbc_8_cropped_InceptionResNetV2_fine_tuned_100e.h5')
+
 
 
 test_gen = get_data_generator(df, test_idx, for_training=False)
