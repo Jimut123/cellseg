@@ -1,8 +1,8 @@
 Total Convolutional Layers: 94
 Total Linear (Dense) Layers: 3
-Total Parameters: 22069448
-Trainable params: 266664
-Non-trainable params: 21802784
+Total Parameters: 22069514
+Trainable params: 22035082
+Non-trainable params: 34432
 Total memory usage: 2.834
-File size in MB: 87.0698013305664
+File size in MB: 253.6690902709961
 FLOPs (total float operations): 1141789826
