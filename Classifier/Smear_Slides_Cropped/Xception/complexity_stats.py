@@ -2,7 +2,7 @@
 ##################################################
 import os
 # set the visible devices to 7 here
-os.environ['CUDA_VISIBLE_DEVICES'] = '5'
+os.environ['CUDA_VISIBLE_DEVICES'] = '3'
 ##################################################
 
 from tensorflow.keras.utils import to_categorical
