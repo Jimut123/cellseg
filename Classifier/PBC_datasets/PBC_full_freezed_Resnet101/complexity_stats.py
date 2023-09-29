@@ -1,5 +1,11 @@
 # PBC full - Resnet 101 freezed
 
+##################################################
+import os
+# set the visible devices to 7 here
+os.environ['CUDA_VISIBLE_DEVICES'] = '4'
+##################################################
+
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
 
@@ -236,13 +242,137 @@ callbacks = [
 logdir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
 
-history = model.fit(train_gen,
-                    steps_per_epoch=len(train_idx)//batch_size,
-                    epochs=100,
-                    callbacks=[tensorboard_callback,callbacks],
-                    validation_data=valid_gen,
-                    validation_steps=len(valid_idx)//valid_batch_size)
 
+
+############################################################################
+from keras.utils.layer_utils import count_params
+
+# Initialize a counter for convolutional layers
+conv_layer_count = 0
+
+# Iterate through the layers of the model
+for layer in model.layers:
+    # Check if the layer is a convolutional layer
+    if 'Conv2D' in str(layer.__class__):
+        conv_layer_count += 1
+
+# Print the total number of convolutional layers in the model
+print("Total Convolutional Layers:", conv_layer_count)
+
+
+
+# Initialize a counter for linear layers
+linear_layer_count = 0
+
+# Iterate through the layers of the model
+for layer in model.layers:
+    # Check if the layer is a dense layer
+    if 'Dense' in str(layer.__class__):
+        linear_layer_count += 1
+
+# Print the total number of linear layers in the model
+print("Total Linear (Dense) Layers:", linear_layer_count)
+
+
+total_params = model.count_params()
+print("Total Parameters:", total_params)
+
+
+
+trainable_count = count_params(model.trainable_weights)
+non_trainable_count = count_params(model.non_trainable_weights)
+
+
+
+
+def get_model_memory_usage(batch_size, model):
+    import numpy as np
+    try:
+        from keras import backend as K
+    except:
+        from tensorflow.keras import backend as K
+
+    shapes_mem_count = 0
+    internal_model_mem_count = 0
+    for l in model.layers:
+        layer_type = l.__class__.__name__
+        if layer_type == 'Model':
+            internal_model_mem_count += get_model_memory_usage(batch_size, l)
+        single_layer_mem = 1
+        out_shape = l.output_shape
+        if type(out_shape) is list:
+            out_shape = out_shape[0]
+        for s in out_shape:
+            if s is None:
+                continue
+            single_layer_mem *= s
+        shapes_mem_count += single_layer_mem
+
+    trainable_count = np.sum([K.count_params(p) for p in model.trainable_weights])
+    non_trainable_count = np.sum([K.count_params(p) for p in model.non_trainable_weights])
+
+    number_size = 4.0
+    if K.floatx() == 'float16':
+        number_size = 2.0
+    if K.floatx() == 'float64':
+        number_size = 8.0
+
+    total_memory = number_size * (batch_size * shapes_mem_count + trainable_count + non_trainable_count)
+    gbytes = np.round(total_memory / (1024.0 ** 3), 3) + internal_model_mem_count
+    return gbytes
+
+get_memory_usage =  get_model_memory_usage(batch_size, model)
+
+
+with open("COMPLEXITY_DUMP.txt", 'a') as f:
+    f.write("Total Convolutional Layers: "+str(conv_layer_count)+'\n')
+    f.write("Total Linear (Dense) Layers: "+str(linear_layer_count)+'\n')
+    f.write("Total Parameters: "+str(total_params)+'\n')
+    f.write("Trainable params: "+str(trainable_count)+'\n')
+    f.write("Non-trainable params: "+str(non_trainable_count)+'\n')
+    # f.write("FLOPs (total float operations): "+str(flops.total_float_ops)+"\n")
+    f.write("Total memory usage: "+str(get_memory_usage)+"\n")
+    f.close()
+    
+class TimeHistory(keras.callbacks.Callback):
+    def on_train_begin(self, logs={}):
+        self.times = []
+
+    def on_epoch_begin(self, batch, logs={}):
+        self.epoch_time_start = time.time()
+
+    def on_epoch_end(self, batch, logs={}):
+        with open("TRAIN_EPOCH_TIME.txt", 'a') as f:
+            f.write(str(time.time() - self.epoch_time_start)+'\n')
+            f.close()
+        # self.times.append(time.time() - self.epoch_time_start)
+        
+        
+# # Train the model and record training times for each epoch
+# epochs = 1
+# epoch_times = []
+
+# for epoch in range(epochs):
+#     start_time = time.time()  # Record the start time
+#     end_time = time.time()  # Record the end time
+    
+#     epoch_time = end_time - start_time  # Calculate the epoch training time
+#     epoch_times.append(epoch_time)  # Store the epoch training time
+
+time_callback = TimeHistory()
+
+history = model.fit(train_gen,
+                steps_per_epoch=len(train_idx)//batch_size,
+                epochs=10,
+                callbacks=[tensorboard_callback,callbacks,time_callback],
+                validation_data=valid_gen,
+                validation_steps=len(valid_idx)//valid_batch_size)
+
+
+# print(f"Epoch {epoch + 1} took {epoch_time:.2f} seconds")
+
+
+############################################################################
 
 
 import pandas as pd
@@ -267,81 +397,69 @@ from tqdm import tqdm
 y_pred_list = []
 y_test_list = []
 
+
 for i in tqdm(test_idx):
     r = df.iloc[i]
     file_, label = r['file'], r['label']
     im = Image.open(file_)
     im = im.resize((360, 360))
     im = np.array(im) / 255.0
+    
+    ########################################################
+    start_time = time.time()  # Record the start time
+    
     y_pred = model.predict(im[np.newaxis, ...])
+    
+    end_time = time.time()  # Record the end time
+    epoch_time = end_time - start_time  # Calculate the epoch training time
+    with open("INFERENCE_TIME.txt", 'a') as f:
+        f.write(str(epoch_time)+'\n')
+        f.close()
+    
+    ########################################################
     y_pred_list.append(int(tf.math.argmax(y_pred, axis=-1)))
     y_test_list.append(index[label])
+    
 
 
+########################################################
 
-from sklearn.metrics import classification_report, confusion_matrix
-matrix = confusion_matrix(y_test_list, y_pred_list)
-report = classification_report(y_test_list, y_pred_list)
+# calculate the size of .h5 and store it in the statistics
 
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from sklearn.metrics import confusion_matrix
+all_h5_files = glob.glob("*.h5")
 
+file_size = os.stat(all_h5_files[0])
+file_size_mb = file_size.st_size/(1024*1024)
 
+with open("COMPLEXITY_DUMP.txt", 'a') as f:
+    f.write("File size in MB: "+str(file_size_mb)+"\n")
+    f.close()
+    
 
-def cm_analysis(y_true, y_pred, labels, ymap=None, figsize=(10,10)):
-    """
-    Generate matrix plot of confusion matrix with pretty annotations.
-    The plot image is saved to disk.
-    args: 
-      y_true:    true label of the data, with shape (nsamples,)
-      y_pred:    prediction of the data, with shape (nsamples,)
-      filename:  filename of figure file to save
-      labels:    string array, name the order of class labels in the confusion matrix.
-                 use `clf.classes_` if using scikit-learn models.
-                 with shape (nclass,).
-      ymap:      dict: any -> string, length == nclass.
-                 if not None, map the labels & ys to more understandable strings.
-                 Caution: original y_true, y_pred and labels must align.
-      figsize:   the size of the figure plotted.
-    """
-    if ymap is not None:
-        y_pred = [ymap[yi] for yi in y_pred]
-        y_true = [ymap[yi] for yi in y_true]
-        labels = [ymap[yi] for yi in labels]
-    cm = confusion_matrix(y_true, y_pred, labels=labels)
-    cm_sum = np.sum(cm, axis=1, keepdims=True)
-    cm_perc = cm / cm_sum.astype(float) * 100
-    annot = np.empty_like(cm).astype(str)
-    nrows, ncols = cm.shape
-    for i in range(nrows):
-        for j in range(ncols):
-            c = cm[i, j]
-            p = cm_perc[i, j]
-            if i == j:
-                s = cm_sum[i]
-                annot[i, j] = '%.1f%%\n%d/%d' % (p, c, s)
-            elif c == 0:
-                annot[i, j] = ''
-            else:
-                annot[i, j] = '%.1f%%\n%d' % (p, c)
-    cm = pd.DataFrame(cm, index=labels, columns=labels)
-    cm.index.name = 'Actual'
-    cm.columns.name = 'Predicted'
-    fig, ax = plt.subplots(figsize=figsize)
-    sns.heatmap(cm, annot=annot, fmt='', ax=ax, cmap='rocket_r')
-    #plt.savefig(filename)
-    plt.savefig('confusion_matrix_pbc_8_full_resnet101_100e.png')
-    plt.savefig('confusion_matrix_pbc_8_full_resnet101_100e.eps')
-    #plt.show()
+session = tf.compat.v1.Session()
+graph = tf.compat.v1.get_default_graph()
 
-cm_analysis(y_test_list, y_pred_list, [i for i in rev_index] , ymap=None, figsize=(10,10))
+with graph.as_default():
+    with session.as_default():
+        model = keras.applications.mobilenet.MobileNet(
+                alpha=1, weights=None, input_tensor=tf.compat.v1.placeholder('float32', shape=(1, 224, 224, 3)))
+
+        run_meta = tf.compat.v1.RunMetadata()
+        opts = tf.compat.v1.profiler.ProfileOptionBuilder.float_operation()
+
+        # Optional: save printed results to file
+        # flops_log_path = os.path.join(tempfile.gettempdir(), 'tf_flops_log.txt')
+        # opts['output'] = 'file:outfile={}'.format(flops_log_path)
+
+        # We use the Keras session graph in the call to the profiler.
+        flops = tf.compat.v1.profiler.profile(graph=graph,
+                                                run_meta=run_meta, cmd='op', options=opts)
+
+tf.compat.v1.reset_default_graph()
 
 
-with open('report_pbc_8_full_resnet101_100e.txt', 'w') as f:
-    sys.stdout = f # Change the standard output to the file we created.
-    print(report)
-    #sys.stdout = original_stdout # Reset the standard output to its original value
-
+with open("COMPLEXITY_DUMP.txt", 'a') as f:
+    f.write("FLOPs (total float operations): "+str(flops.total_float_ops)+"\n")
+    f.close()
+    
+########################################################
