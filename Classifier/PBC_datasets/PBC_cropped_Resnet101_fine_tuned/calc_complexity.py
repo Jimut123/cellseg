@@ -379,7 +379,7 @@ time_callback = TimeHistory()
 
 history = history = model.fit(train_gen,
                 steps_per_epoch=len(train_idx)//batch_size,
-                epochs=3,
+                epochs=10,
                 callbacks=[tensorboard_callback,callbacks,time_callback],
                 validation_data=valid_gen,
                 validation_steps=len(valid_idx)//valid_batch_size)
