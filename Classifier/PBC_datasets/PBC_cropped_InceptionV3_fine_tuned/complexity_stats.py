@@ -1,13 +1,12 @@
-# Name: Jimut Bahan Pal, 28-09-2023
+# PBC Cropped - InceptionV3 fine tuned
+# Name: Jimut Bahan Pal, 29-09-2023
 # Tasks for the revision of ESWA
-
 
 ##################################################
 import os
 # set the visible devices to 7 here
 os.environ['CUDA_VISIBLE_DEVICES'] = '4'
 ##################################################
-
 
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
@@ -75,8 +74,6 @@ for item in dir:
   img_names = glob.glob("{}/*".format(item))[:5]
   print("img names = ",img_names[:10])
   short_name = str(img_names[0].split('.')[0]).split('/')[2].split('_')[0]
-
-  print("Short name == ",short_name)
   short_index[short_name] = img_names[0].split('/')[1]
   short_labels.append(short_name)
   total_img_names.append(img_names)
@@ -100,7 +97,6 @@ for item in get_freq:
   count += 1 
 print(index)
 print(rev_index)
-
 
 
 
@@ -149,17 +145,19 @@ print('train count: %s, valid count: %s, test count: %s' % (
     len(train_idx), len(valid_idx), len(test_idx)))
 
 
-from tensorflow.keras.applications.resnet import ResNet101
-from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.resnet import preprocess_input
-from keras.models import Model
 
+
+from tensorflow.keras.applications import InceptionV3
+from tensorflow.keras.preprocessing import image
+from tensorflow.keras.applications.vgg16 import preprocess_input
+from keras.models import Model
+from keras.optimizers import Adam
 from keras.layers import Dense, Flatten, GlobalAveragePooling2D
 
 
-frozen = ResNet101(weights="imagenet", input_shape=(360,360,3), include_top=False)
-frozen.summary()
 
+frozen = InceptionV3(weights="imagenet", input_shape=(360,360,3), include_top=False)
+frozen.summary()
 
 trainable = frozen.output
 trainable = GlobalAveragePooling2D()(trainable)
@@ -173,6 +171,7 @@ model.summary()
 # model.layers
 # for layer in model.layers[:-4]:
 #     layer.trainable = False
+
 for layer in model.layers:
     print(layer, layer.trainable)
 
@@ -229,7 +228,6 @@ def get_data_generator_custom(df, indices, for_training, batch_size=16):
                 yield  np.array(labels)
                 labels = []
 
-
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow import keras
 # batch_size = 100
@@ -243,9 +241,12 @@ callbacks = [
     ModelCheckpoint("./model_checkpoint", monitor='val_loss'),
     #ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=4)
 ]
+
 # for storing logs into tensorboard
 logdir="logs/fit/" + datetime.now().strftime("%Y%m%d-%H%M%S")
 tensorboard_callback = keras.callbacks.TensorBoard(log_dir=logdir)
+
+
 
 
 
@@ -380,23 +381,24 @@ history = history = model.fit(train_gen,
 ############################################################################
 
 
+
+
 import pandas as pd
 hist_df = pd.DataFrame(history.history) 
-hist_json_file = 'history_pbc_8_cropped_resnet101_fine_tuned_100e.json' 
+hist_json_file = 'history_pbc_8_cropped_inception_v3_fine_tuned_100e.json' 
 with open(hist_json_file, mode='w') as f:
     hist_df.to_json(f)
 
 # download the model in computer for later use
-model.save('classification_pbc_8_cropped_resnet101_fine_tuned_100e.h5')
+model.save('classification_pbc_8_cropped_inception_v3_fine_tuned_100e.h5')
 
 from tensorflow import keras
-model = keras.models.load_model('classification_pbc_8_cropped_resnet101_fine_tuned_100e.h5')
+model = keras.models.load_model('classification_pbc_8_cropped_inception_v3_fine_tuned_100e.h5')
+
 
 
 test_gen = get_data_generator(df, test_idx, for_training=False)
 dict(zip(model.metrics_names, model.evaluate(test_gen, steps=len(test_idx))))
-
-
 
 from tensorflow.keras.utils import to_categorical
 from PIL import Image
@@ -425,7 +427,6 @@ for i in tqdm(test_idx):
     ########################################################
     y_pred_list.append(int(tf.math.argmax(y_pred, axis=-1)))
     y_test_list.append(index[label])
-
 
 
 
