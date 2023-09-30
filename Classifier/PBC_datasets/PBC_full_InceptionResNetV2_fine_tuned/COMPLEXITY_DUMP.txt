@@ -4,3 +4,5 @@ Total Parameters: 54537864
 Trainable params: 54477320
 Non-trainable params: 60544
 Total memory usage: 7.0
+File size in MB: 626.9653091430664
+FLOPs (total float operations): 1141789826
