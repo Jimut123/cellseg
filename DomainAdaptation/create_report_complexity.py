@@ -1,18 +1,13 @@
 
 
 
-ALL_FOLDERS = ["PBC_cropped_InceptionV3_fine_tuned", "InceptionV3", "PBC_full_InceptionV3_fine_tuned", "PBC_full_freezed_InceptionV3", \
-               "PBC_cropped_InceptionResNetV2_fine_tuned", "InceptionResNetV2", "PBC_full_InceptionResNetV2_fine_tuned", "PBC_full_InceptionResNetV2", \
-               "PBC_cropped_NASNetLarge_fine_tuned", "NASNetLarge", "PBC_full_NASNetLarge_fine_tuned", "PBC_full_freezed_NASNetLarge", \
-               "PBC_cropped_VGG_fine_tuned", "VGG_16", "PBC_full_VGG16_fine_tuned", "PBC_full_freezed_VGG16", \
-               "PBC_cropped_Xception_fine_tuned", "Xception", "PBC_full_Xception_fine_tuned", "PBC_full_freezed_Xception", \
-               "PBC_cropped_Resnet101_fine_tuned", "Resnet101", "PBC_full_Resnet101_fine_tuned", "PBC_full_freezed_Resnet101"]
+ALL_FOLDERS = ["DA_UnAug_1"]
 
 
 counter = 0
 
 for folder_name in ALL_FOLDERS:
-    if counter%4==0:    
+    if counter%1==0:    
         print(folder_name,"----")
     # read the contents of COMPLEXITY_DUMP.txt from each folder
     
