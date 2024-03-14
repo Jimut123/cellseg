@@ -1,4 +1,5 @@
-# Instance segmentation of Peripheral Blood Smear and detection via Domain Adaptation
+# Advancing instance segmentation and WBC classification in peripheral blood smear through domain adaptation: A study on PBC and the novel RV-PBS datasets
+***
 
 ## This repository hosts the code created for the paper titled ***[Advancing instance segmentation and WBC classification in peripheral blood smear through domain adaptation: A study on PBC and the novel RV-PBS datasets](https://www.sciencedirect.com/science/article/pii/S0957417424005268?via%3Dihub#d1e3975).***
 
