@@ -1,5 +1,7 @@
 # Instance segmentation of Peripheral Blood Smear and detection via Domain Adaptation
 
+## This repository hosts the code created for the paper titled ***[Advancing instance segmentation and WBC classification in peripheral blood smear through domain adaptation: A study on PBC and the novel RV-PBS datasets](https://www.sciencedirect.com/science/article/pii/S0957417424005268?via%3Dihub#d1e3975).***
+
 This is the part of my Master's thesis where we segmented white blood cell via Mask RCNN (Aniket's part) and 
 used Domain Adaptation to detect the cells.
 
@@ -112,5 +114,15 @@ The dataset is annotated using [CVAT](https://github.com/openvinotoolkit/cvat). 
 ## If you find this work useful, please consider citing
 
 ```
-
+@article{PAL2024123660,
+title = {Advancing instance segmentation and WBC classification in peripheral blood smear through domain adaptation: A study on PBC and the novel RV-PBS datasets},
+journal = {Expert Systems with Applications},
+pages = {123660},
+year = {2024},
+issn = {0957-4174},
+doi = {https://doi.org/10.1016/j.eswa.2024.123660},
+url = {https://www.sciencedirect.com/science/article/pii/S0957417424005268},
+author = {Jimut Bahan Pal and Aniket Bhattacharyea and Debasis Banerjee and Br. Tamal Maharaj},
+keywords = {Automated blood test, Detection, Domain adaptation, Instance segmentation, Peripheral blood smear}
+}
 ```
