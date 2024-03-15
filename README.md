@@ -118,6 +118,7 @@ The dataset is annotated using [CVAT](https://github.com/openvinotoolkit/cvat). 
 @article{PAL2024123660,
 title = {Advancing instance segmentation and WBC classification in peripheral blood smear through domain adaptation: A study on PBC and the novel RV-PBS datasets},
 journal = {Expert Systems with Applications},
+volume = {249},
 pages = {123660},
 year = {2024},
 issn = {0957-4174},
